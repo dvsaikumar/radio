@@ -1,0 +1,16 @@
+name = "radio-backend"
+main = "src/index.ts"
+compatibility_date = "2024-04-05"
+
+# R2 Bucket Binding
+[[r2_buckets]]
+binding = "MEDIA_BUCKET"
+bucket_name = "radio-media"
+preview_bucket_name = "radio-media-dev"
+
+# D1 Database Binding
+[[d1_databases]]
+binding = "DB"
+database_name = "radio-db"
+database_id = "your-d1-uuid-here" # Replace with actual UUID
+preview_database_id = "DB"

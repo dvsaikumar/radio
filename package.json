@@ -1,0 +1,7 @@
+{
+  "name": "radio-monorepo",
+  "private": true,
+  "workspaces": [
+    "apps/*"
+  ]
+}
