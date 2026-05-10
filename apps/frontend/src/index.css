@@ -16,8 +16,8 @@
 }
 
 body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-  background-color: var(--bg-color);
+  font-family: 'Outfit', 'Inter', sans-serif;
+  background: radial-gradient(circle at 50% 50%, #1a1a24 0%, #0f0f13 100%);
   color: var(--text-primary);
   min-height: 100vh;
   margin: 0;
@@ -29,54 +29,64 @@ body {
   height: 100vh;
   display: flex;
   overflow: hidden;
+  background: 
+    radial-gradient(circle at top right, rgba(255, 51, 102, 0.05), transparent 400px),
+    radial-gradient(circle at bottom left, rgba(0, 255, 204, 0.05), transparent 400px);
 }
 
 .main-content {
   flex: 1;
   display: flex;
   flex-direction: column;
-  padding: 2rem;
-  gap: 2rem;
+  padding: 4rem;
+  gap: 4rem;
   overflow-y: auto;
   align-items: center;
+  justify-content: center;
 }
 
 header {
-  width: 100%;
-  max-width: 1200px;
-  animation: fadeInDown 0.8s ease-out;
+  position: absolute;
+  top: 4rem;
+  left: 4rem;
+  text-align: left;
+  animation: fadeInDown 1s ease-out;
 }
 
 header h1 {
-  font-size: 3rem;
-  font-weight: 800;
+  font-size: 6rem;
+  font-weight: 900;
+  letter-spacing: -4px;
   background: linear-gradient(135deg, #ff3366, #ff9933);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0;
+  line-height: 1;
 }
 
 .player-card {
-  background: var(--glass-bg);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid var(--glass-border);
-  border-radius: 24px;
-  padding: 2rem;
+  background: rgba(255, 255, 255, 0.02);
+  backdrop-filter: blur(40px);
+  -webkit-backdrop-filter: blur(40px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 48px;
+  padding: 4rem;
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  animation: fadeInUp 0.8s ease-out;
-  margin: auto;
-  max-width: 500px;
+  gap: 3rem;
+  box-shadow: 
+    0 30px 60px rgba(0, 0, 0, 0.5),
+    inset 0 0 20px rgba(255, 255, 255, 0.02);
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: fadeInUp 1.2s ease-out;
+  max-width: 650px;
   width: 100%;
 }
 
 .player-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+  transform: translateY(-15px) scale(1.02);
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.1);
 }
 
 .track-info {
