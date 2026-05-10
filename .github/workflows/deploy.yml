@@ -1,4 +1,6 @@
+# v1.1 - Trigger deployment with new secrets
 name: Deploy to Cloudflare
+
 
 on:
   push:
