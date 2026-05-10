@@ -420,11 +420,13 @@ header h1 {
   background: var(--accent-primary);
   color: #000;
   font-weight: 700;
-  padding: 0.6rem;
+  padding: 0.75rem;
   border-radius: 4px;
   border: none;
   cursor: pointer;
-  font-size: 0.8rem;
+  font-size: 0.9rem;
+  width: 100% !important; /* Force full width */
+  height: auto !important; /* Force auto height */
 }
 
 .library-table td {
@@ -442,6 +444,8 @@ header h1 {
   padding: 0.3rem 0.6rem;
   border-radius: 4px;
   font-size: 0.7rem;
+  width: auto !important; /* Overwrite player btn size */
+  height: auto !important; /* Overwrite player btn size */
 }
 
 .studio-search {
@@ -458,8 +462,9 @@ header h1 {
   background: rgba(255, 255, 255, 0.02);
   border: 1px solid rgba(255, 255, 255, 0.06);
   border-radius: 6px;
-  padding: 0.5rem;
-  width: 100%;
+  padding: 0.6rem;
+  width: 100% !important; /* Force full width */
+  height: auto !important; /* Force auto height */
   font-size: 0.75rem;
 }
 
