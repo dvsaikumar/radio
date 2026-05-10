@@ -19,8 +19,8 @@ app.get('/api/tracks', async (c) => {
   return c.json({ tracks: results });
 });
 
-// Edge-Proxied Range Streaming from R2
-app.get('/stream/:id', async (c) => {
+// Edge-Proxied Range Streaming from R2 (Supports both paths)
+const streamHandler = async (c: any) => {
   const id = c.req.param('id');
   
   // Fetch track metadata to get R2 key
@@ -59,8 +59,6 @@ app.get('/stream/:id', async (c) => {
     headers.set('Accept-Ranges', 'bytes');
 
     if ('range' in file && file.range) {
-        // R2 automatically handles the range requests and returns a 206
-        // But Hono might need us to return the raw response
         const response = new Response((file as R2ObjectBody).body, {
             status: 206,
             headers,
@@ -74,6 +72,9 @@ app.get('/stream/:id', async (c) => {
   } catch (error) {
     return c.text('Internal Server Error', 500);
   }
-});
+};
+
+app.get('/stream/:id', streamHandler);
+app.get('/api/stream/:id', streamHandler);
 
 export default app;
