@@ -60,17 +60,17 @@ export function App() {
 
   return (
     <div class="app-container">
-      <Sidebar tracks={tracks} currentTrack={currentTrack} onSelectTrack={setCurrentTrack} />
+      <Sidebar 
+        tracks={tracks} 
+        currentTrack={currentTrack} 
+        onSelectTrack={setCurrentTrack} 
+        onRefreshTracks={fetchTracks}
+      />
       <div class="main-content">
         <header>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-            <div>
-              <h1 style={{ color: '#00ffcc', textTransform: 'uppercase' }}>Ramam</h1>
-              <p>Online Radio Station</p>
-              <p>Status: {tracks.length > 0 ? "Online" : "Connecting to Database..."}</p>
-            </div>
-            <Admin tracks={tracks} onRefresh={fetchTracks} />
-          </div>
+          <h1 style={{ color: '#00ffcc', textTransform: 'uppercase' }}>Ramam</h1>
+          <p>Online Radio Station</p>
+          <p>Status: {tracks.length > 0 ? "Online" : "Connecting to Database..."}</p>
         </header>
         <main>
           {currentTrack ? (

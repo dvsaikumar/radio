@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'preact/hooks';
 import { Track, BACKEND_URL } from '../app';
 
-export function Admin({ tracks, onRefresh }: { tracks: Track[], onRefresh: () => void }) {
+export function Admin({ tracks, onRefresh, isCollapsed }: { tracks: Track[], onRefresh: () => void, isCollapsed?: boolean }) {
   const [isOpen, setIsOpen] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -60,8 +60,13 @@ export function Admin({ tracks, onRefresh }: { tracks: Track[], onRefresh: () =>
 
   if (!isOpen) {
     return (
-      <button class="btn admin-toggle-btn studio-btn focusable" onClick={() => setIsOpen(true)}>
-        <span class="icon">💠</span> Studio Dashboard
+      <button 
+        class={`btn admin-toggle-btn studio-btn focusable ${isCollapsed ? 'compact' : ''}`} 
+        onClick={() => setIsOpen(true)}
+        title="Studio Dashboard"
+        style={{ width: '100%', borderRadius: '12px', justifyContent: isCollapsed ? 'center' : 'flex-start', padding: isCollapsed ? '0' : '0 1rem' }}
+      >
+        <span class="icon">💠</span> {!isCollapsed && <span style={{ marginLeft: '10px' }}>Studio Dashboard</span>}
       </button>
     );
   }

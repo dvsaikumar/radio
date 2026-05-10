@@ -1,13 +1,15 @@
 import { useState } from 'preact/hooks';
 import { Track } from '../app';
+import { Admin } from './Admin';
 
 interface SidebarProps {
   tracks: Track[];
   currentTrack: Track | null;
   onSelectTrack: (track: Track) => void;
+  onRefreshTracks: () => void;
 }
 
-export function Sidebar({ tracks, currentTrack, onSelectTrack }: SidebarProps) {
+export function Sidebar({ tracks, currentTrack, onSelectTrack, onRefreshTracks }: SidebarProps) {
   const [isCollapsed, setIsCollapsed] = useState(true);
 
   return (
@@ -47,6 +49,10 @@ export function Sidebar({ tracks, currentTrack, onSelectTrack }: SidebarProps) {
             )}
           </div>
         ))}
+      </div>
+
+      <div class="sidebar-footer" style={{ padding: '1rem', borderTop: '1px solid var(--glass-border)' }}>
+        <Admin tracks={tracks} onRefresh={onRefreshTracks} isCollapsed={isCollapsed} />
       </div>
     </aside>
   );
