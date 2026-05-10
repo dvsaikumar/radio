@@ -433,29 +433,47 @@ header h1 {
 }
 
 .library-table td {
-  padding: 1.5rem;
+  padding: 2rem 1.5rem; /* More vertical padding for rows */
   background: rgba(255, 255, 255, 0.02);
 }
 
-.library-table tr td:first-child { border-top-left-radius: 12px; border-bottom-left-radius: 12px; }
-.library-table tr td:last-child { border-top-right-radius: 12px; border-bottom-right-radius: 12px; }
+.library-table tr:hover td {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.library-table tr td:first-child { border-top-left-radius: 16px; border-bottom-left-radius: 16px; }
+.library-table tr td:last-child { border-top-right-radius: 16px; border-bottom-right-radius: 16px; }
 
 .studio-delete-btn {
   background: rgba(255, 77, 77, 0.1);
   color: #ff4d4d;
-  padding: 0.6rem 1.2rem;
-  border-radius: 8px;
+  padding: 0.8rem 1.5rem;
+  border-radius: 10px;
   font-weight: 600;
+  border: 1px solid transparent;
+  transition: all 0.2s;
+}
+
+.studio-delete-btn:hover {
+  background: #ff4d4d;
+  color: #fff;
 }
 
 .studio-search {
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  padding: 1rem 1.5rem;
-  border-radius: 30px;
+  padding: 1.2rem 2rem;
+  border-radius: 40px;
   color: #fff;
-  width: 350px;
-  font-size: 0.9rem;
+  width: 400px;
+  font-size: 1rem;
+  transition: all 0.2s;
+}
+
+.studio-search:focus {
+  border-color: var(--accent-primary);
+  background: rgba(255, 255, 255, 0.08);
+  outline: none;
 }
 
 .exit-btn {

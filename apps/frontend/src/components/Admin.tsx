@@ -87,33 +87,33 @@ export function Admin({ tracks, onRefresh, isCollapsed }: { tracks: Track[], onR
 
         {/* Main Content */}
         <main class="studio-main">
-          <header class="studio-header">
+          <header class="studio-header" style={{ marginBottom: '5rem' }}>
             <div class="header-left">
-              <h2>Media Library</h2>
-              <p>Manage your global edge assets</p>
+              <h2 style={{ fontSize: '3rem', letterSpacing: '-1px' }}>Media Library</h2>
+              <p style={{ opacity: 0.5, fontSize: '1.1rem' }}>Manage your global edge assets</p>
             </div>
             <div class="header-stats">
               <div class="stat-card">
-                <span class="label">Total Tracks</span>
+                <span class="label">Tracks</span>
                 <span class="value">{tracks.length}</span>
               </div>
               <div class="stat-card">
-                <span class="label">Storage Status</span>
-                <span class="value green">Active</span>
+                <span class="label">Status</span>
+                <span class="value green">Online</span>
               </div>
             </div>
           </header>
 
           <div class="studio-grid">
             {/* Upload Card */}
-            <section class="studio-card upload-card">
-              <h3>Upload to Cloud</h3>
+            <section class="studio-card upload-card" style={{ padding: '3rem' }}>
+              <h3 style={{ marginBottom: '2rem', fontSize: '1.5rem' }}>Upload Track</h3>
               <form onSubmit={handleUpload} class="studio-form">
                 <div class="input-group">
-                  <label>Track Title</label>
+                  <label>Title</label>
                   <input 
                     type="text" 
-                    placeholder="e.g. Midnight City" 
+                    placeholder="Midnight City" 
                     value={formData.title} 
                     onInput={(e) => setFormData({ ...formData, title: (e.target as HTMLInputElement).value })}
                     required
@@ -123,7 +123,7 @@ export function Admin({ tracks, onRefresh, isCollapsed }: { tracks: Track[], onR
                   <label>Artist</label>
                   <input 
                     type="text" 
-                    placeholder="e.g. M83" 
+                    placeholder="M83" 
                     value={formData.artist} 
                     onInput={(e) => setFormData({ ...formData, artist: (e.target as HTMLInputElement).value })}
                     required
@@ -139,11 +139,13 @@ export function Admin({ tracks, onRefresh, isCollapsed }: { tracks: Track[], onR
                     class="hidden-input"
                   />
                   <label for="file-input" class="file-label">
-                    {file ? `✅ ${file.name}` : '📁 Drop MP3 here or click to browse'}
+                    <div class="upload-icon" style={{ fontSize: '2rem', marginBottom: '1rem' }}>📁</div>
+                    <div style={{ fontWeight: '600' }}>{file ? file.name : 'Choose MP3 File'}</div>
+                    <div style={{ fontSize: '0.8rem', opacity: 0.5, marginTop: '0.5rem' }}>or drag and drop here</div>
                   </label>
                 </div>
                 <button type="submit" class="btn studio-primary-btn" disabled={isUploading}>
-                  {isUploading ? '🚀 Syncing to Edge...' : 'Publish to Radio'}
+                  {isUploading ? '🚀 Uploading...' : 'Sync to Cloud'}
                 </button>
               </form>
             </section>
