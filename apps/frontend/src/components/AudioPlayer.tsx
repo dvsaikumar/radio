@@ -88,6 +88,26 @@ export function AudioPlayer({ track }: { track: Track }) {
     }
   };
 
+  const formatTime = (time: number) => {
+    if (isNaN(time)) return "0:00";
+    const minutes = Math.floor(time / 60);
+    const seconds = Math.floor(time % 60);
+    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+  };
+
+  const handleSeek = (e: MouseEvent) => {
+    const bar = e.currentTarget as HTMLDivElement;
+    const rect = bar.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const percentage = x / rect.width;
+    
+    if (audioRef.current && !isNaN(audioRef.current.duration)) {
+      const newTime = percentage * audioRef.current.duration;
+      audioRef.current.currentTime = newTime;
+      setProgress(percentage * 100);
+    }
+  };
+
   const handleTimeUpdate = () => {
     if (audioRef.current) {
       const current = audioRef.current.currentTime;
@@ -105,9 +125,20 @@ export function AudioPlayer({ track }: { track: Track }) {
         <div class="track-artist">{track.artist}</div>
       </div>
 
-      <div class="progress-container">
-        <div class="progress-bar focusable" tabIndex={0}>
-          <div class="progress" style={{ width: `${progress}%` }}></div>
+      <div class="progress-section">
+        <div class="progress-container">
+          <div 
+            class="progress-bar focusable" 
+            tabIndex={0}
+            onClick={handleSeek}
+            style={{ cursor: 'pointer' }}
+          >
+            <div class="progress" style={{ width: `${progress}%` }}></div>
+          </div>
+        </div>
+        <div class="time-display" style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', color: 'var(--text-secondary)', marginTop: '0.5rem' }}>
+          <span>{audioRef.current ? formatTime(audioRef.current.currentTime) : "0:00"}</span>
+          <span>{audioRef.current ? formatTime(audioRef.current.duration) : "0:00"}</span>
         </div>
       </div>
 
