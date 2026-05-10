@@ -87,10 +87,10 @@ export function Admin({ tracks, onRefresh, isCollapsed }: { tracks: Track[], onR
 
         {/* Main Content */}
         <main class="studio-main">
-          <header class="studio-header" style={{ marginBottom: '5rem' }}>
+          <header class="studio-header">
             <div class="header-left">
-              <h2 style={{ fontSize: '3rem', letterSpacing: '-1px' }}>Media Library</h2>
-              <p style={{ opacity: 0.5, fontSize: '1.1rem' }}>Manage your global edge assets</p>
+              <h2 style={{ fontSize: '2rem' }}>Studio Library</h2>
+              <p style={{ opacity: 0.5, fontSize: '0.8rem' }}>Global edge assets</p>
             </div>
             <div class="header-stats">
               <div class="stat-card">
@@ -108,7 +108,7 @@ export function Admin({ tracks, onRefresh, isCollapsed }: { tracks: Track[], onR
             {/* Upload Pane (Fixed/Left) */}
             <div class="upload-card-pane">
               <section class="studio-card upload-card">
-                <h3>Upload Track</h3>
+                <h3 style={{ marginBottom: '1rem' }}>Upload</h3>
                 <form onSubmit={handleUpload} class="studio-form">
                   <div class="input-group">
                     <label>Title</label>
