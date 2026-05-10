@@ -19,6 +19,59 @@ app.get('/api/tracks', async (c) => {
   return c.json({ tracks: results });
 });
 
+// Admin: Add new track (Upload to R2 + Insert to D1)
+app.post('/api/tracks', async (c) => {
+  try {
+    const formData = await c.req.parseBody();
+    const title = formData.title as string;
+    const artist = formData.artist as string;
+    const file = formData.file as File;
+
+    if (!title || !artist || !file) {
+      return c.json({ error: 'Missing required fields' }, 400);
+    }
+
+    const id = crypto.randomUUID();
+    const fileName = `${id}-${file.name}`;
+
+    // 1. Upload to R2
+    await c.env.MEDIA_BUCKET.put(fileName, await file.arrayBuffer(), {
+      httpMetadata: { contentType: file.type },
+    });
+
+    // 2. Insert into D1
+    await c.env.DB.prepare(
+      'INSERT INTO Tracks (id, title, artist, r2_key) VALUES (?, ?, ?, ?)'
+    ).bind(id, title, artist, fileName).run();
+
+    return c.json({ success: true, track: { id, title, artist, r2_key: fileName } });
+  } catch (error: any) {
+    return c.json({ error: error.message }, 500);
+  }
+});
+
+// Admin: Delete track (Delete from D1 + Delete from R2)
+app.delete('/api/tracks/:id', async (c) => {
+  const id = c.req.param('id');
+  
+  try {
+    // Get R2 key first
+    const track = await c.env.DB.prepare('SELECT r2_key FROM Tracks WHERE id = ?').bind(id).first();
+    
+    if (track && track.r2_key) {
+      // 1. Delete from R2
+      await c.env.MEDIA_BUCKET.delete(track.r2_key as string);
+    }
+
+    // 2. Delete from D1
+    await c.env.DB.prepare('DELETE FROM Tracks WHERE id = ?').bind(id).run();
+
+    return c.json({ success: true });
+  } catch (error: any) {
+    return c.json({ error: error.message }, 500);
+  }
+});
+
 // Edge-Proxied Range Streaming from R2 (Supports both paths)
 const streamHandler = async (c: any) => {
   const id = c.req.param('id');
