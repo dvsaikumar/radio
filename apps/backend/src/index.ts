@@ -30,47 +30,57 @@ const streamHandler = async (c: any) => {
     return c.notFound();
   }
 
-  const range = c.req.header('range');
-  
-  // Only handle GET and HEAD requests
-  if (c.req.method !== 'GET' && c.req.method !== 'HEAD') {
-    return c.text('Method Not Allowed', 405);
-  }
+  const rangeHeader = c.req.header('range');
+  let r2Key = track.r2_key as string;
 
   try {
-    let file: R2Object | R2ObjectBody | null;
-
-    if (range) {
-      file = await c.env.MEDIA_BUCKET.get(track.r2_key as string, {
-        range: c.req.raw.headers,
-        onlyIf: c.req.raw.headers,
-      });
-    } else {
-      file = await c.env.MEDIA_BUCKET.get(track.r2_key as string);
+    // Attempt to get the file
+    let file = await c.env.MEDIA_BUCKET.get(r2Key);
+    
+    // Fallback: If Rama.mp3 is not found, try Rama
+    if (!file && r2Key.endsWith('.mp3')) {
+      const fallbackKey = r2Key.replace('.mp3', '');
+      file = await c.env.MEDIA_BUCKET.get(fallbackKey);
     }
 
-    if (file === null) {
-      return c.notFound();
+    if (!file) {
+      return c.text('File not found in R2 bucket: ' + r2Key, 404);
     }
 
     const headers = new Headers();
     file.writeHttpMetadata(headers);
-    headers.set('etag', file.httpEtag);
     headers.set('Accept-Ranges', 'bytes');
+    headers.set('Access-Control-Allow-Origin', '*');
 
-    if ('range' in file && file.range) {
-        const response = new Response((file as R2ObjectBody).body, {
-            status: 206,
-            headers,
+    // Handle Range Requests for seekability/duration
+    if (rangeHeader) {
+      const parts = rangeHeader.replace(/bytes=/, "").split("-");
+      const start = parseInt(parts[0], 10);
+      const end = parts[1] ? parseInt(parts[1], 10) : file.size - 1;
+      const chunksize = (end - start) + 1;
+      
+      const rangeFile = await c.env.MEDIA_BUCKET.get(r2Key, {
+        range: { offset: start, length: chunksize }
+      });
+
+      if (rangeFile) {
+        headers.set('Content-Range', `bytes ${start}-${end}/${file.size}`);
+        headers.set('Content-Length', chunksize.toString());
+        return new Response((rangeFile as R2ObjectBody).body, {
+          status: 206,
+          headers,
         });
-        return response;
+      }
     }
 
+    headers.set('Content-Length', file.size.toString());
     return new Response((file as R2ObjectBody).body, {
+      status: 200,
       headers,
     });
-  } catch (error) {
-    return c.text('Internal Server Error', 500);
+
+  } catch (error: any) {
+    return c.text('Streaming Error: ' + error.message, 500);
   }
 };
 
