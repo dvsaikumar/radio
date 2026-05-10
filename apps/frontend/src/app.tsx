@@ -14,6 +14,7 @@ export interface Track {
 
 export function App() {
   const [tracks, setTracks] = useState<Track[]>([]);
+  const [currentTrack, setCurrentTrack] = useState<Track | null>(null);
   const [repeatMode, setRepeatMode] = useState<'off' | 'one' | 'all'>('off');
 
   useEffect(() => {
