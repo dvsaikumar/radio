@@ -46,22 +46,30 @@ body {
 }
 
 header {
-  position: absolute;
-  top: 4rem;
-  left: 4rem;
-  text-align: left;
+  text-align: center;
+  margin-bottom: 3rem; /* Spacing above player */
   animation: fadeInDown 1s ease-out;
+  width: 100%;
 }
 
 header h1 {
-  font-size: 6rem;
+  font-size: 5rem;
   font-weight: 900;
-  letter-spacing: -4px;
+  letter-spacing: -3px;
   background: linear-gradient(135deg, #ff3366, #ff9933);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   margin-bottom: 0;
   line-height: 1;
+}
+
+header p {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 4px;
+  margin-top: 1rem;
+  opacity: 0.6;
 }
 
 .player-card {
