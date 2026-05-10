@@ -35,14 +35,15 @@ export function App() {
       <Sidebar tracks={tracks} currentTrack={currentTrack} onSelectTrack={setCurrentTrack} />
       <div class="main-content">
         <header>
-          <h1 style={{color: '#00ffcc', textTransform: 'uppercase'}}>RAMA RADIO [8822]</h1>
+          <h1 style={{ color: '#00ffcc', textTransform: 'uppercase' }}>Ramam</h1>
+          <p>Online Radio Station</p>
           <p>Status: {tracks.length > 0 ? "Online" : "Connecting to Database..."}</p>
         </header>
         <main>
           {currentTrack ? (
             <AudioPlayer track={currentTrack} />
           ) : (
-            <div class="loading" style={{textAlign: 'center', padding: '5rem'}}>
+            <div class="loading" style={{ textAlign: 'center', padding: '5rem' }}>
               <h2>{tracks.length === 0 ? "DATABASE EMPTY - RUN INSERT COMMAND" : "LOADING TRACKS..."}</h2>
             </div>
           )}
