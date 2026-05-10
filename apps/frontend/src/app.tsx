@@ -17,7 +17,7 @@ export function App() {
   const [currentTrack, setCurrentTrack] = useState<Track | null>(null);
 
   useEffect(() => {
-    console.log("FETCHING START...");
+    console.log("!!! V4 BOOTING - ID: 8822 !!!");
     fetch(`${BACKEND_URL}/api/tracks`)
       .then(res => res.json())
       .then(data => {
@@ -27,7 +27,7 @@ export function App() {
           setCurrentTrack(trackList[0]);
         }
       })
-      .catch(err => console.error("Fetch error:", err));
+      .catch(err => console.error("API Error:", err));
   }, []);
 
   return (
@@ -35,17 +35,15 @@ export function App() {
       <Sidebar tracks={tracks} currentTrack={currentTrack} onSelectTrack={setCurrentTrack} />
       <div class="main-content">
         <header>
-          <h1 style={{color: '#ff4b2b', fontSize: '2.5rem', textShadow: '0 0 20px rgba(255,75,43,0.5)'}}>
-            RAMA RADIO FIXED
-          </h1>
-          <p>Live Streaming: {tracks.length > 0 ? tracks[0].title : "Checking database..."}</p>
+          <h1 style={{color: '#00ffcc', textTransform: 'uppercase'}}>RAMA RADIO [8822]</h1>
+          <p>Status: {tracks.length > 0 ? "Online" : "Connecting to Database..."}</p>
         </header>
         <main>
           {currentTrack ? (
             <AudioPlayer track={currentTrack} />
           ) : (
-            <div class="loading" style={{textAlign: 'center', padding: '2rem', color: 'var(--text-secondary)'}}>
-              {tracks.length === 0 ? "No tracks found. Please run the D1 insert command!" : "Loading stream..."}
+            <div class="loading" style={{textAlign: 'center', padding: '5rem'}}>
+              <h2>{tracks.length === 0 ? "DATABASE EMPTY - RUN INSERT COMMAND" : "LOADING TRACKS..."}</h2>
             </div>
           )}
         </main>
