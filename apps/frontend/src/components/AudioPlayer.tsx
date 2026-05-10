@@ -39,15 +39,47 @@ const RepeatIcon = () => (
   </svg>
 );
 
-export function AudioPlayer({ track }: { track: Track }) {
+const RepeatOneIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M7 7h10v3l4-4l-4-4v3H5v6h2V7zm10 10H7v-3l-4 4l4 4v-3h12v-6h-2v4zm-4-2V9h-1l-2 1v1h1.5v4H13z" />
+  </svg>
+);
+
+export function AudioPlayer({ 
+  track, 
+  onNext, 
+  onPrev, 
+  repeatMode, 
+  setRepeatMode 
+}: { 
+  track: Track;
+  onNext: () => void;
+  onPrev: () => void;
+  repeatMode: 'off' | 'one' | 'all';
+  setRepeatMode: (mode: 'off' | 'one' | 'all') => void;
+}) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
   const [isShuffle, setIsShuffle] = useState(false);
-  const [isRepeat, setIsRepeat] = useState(false);
   const audioRef = useRef<HTMLAudioElement>(null);
   const navRef = useSpatialNav();
 
-  const streamUrl = `${BACKEND_URL}/stream/${track.id}`;
+  const streamUrl = `${BACKEND_URL}/api/stream/${track.id}`;
+
+  const cycleRepeat = () => {
+    if (repeatMode === 'off') setRepeatMode('one');
+    else if (repeatMode === 'one') setRepeatMode('all');
+    else setRepeatMode('off');
+  };
+
+  const handleEnded = () => {
+    if (repeatMode === 'one' && audioRef.current) {
+      audioRef.current.currentTime = 0;
+      audioRef.current.play();
+    } else {
+      onNext();
+    }
+  };
 
   useEffect(() => {
     // Reset play state and progress when track changes
@@ -151,7 +183,7 @@ export function AudioPlayer({ track }: { track: Track }) {
         >
           <ShuffleIcon />
         </button>
-        <button class="btn focusable" tabIndex={0}>
+        <button class="btn focusable" tabIndex={0} onClick={onPrev}>
           <PrevIcon />
         </button>
         <button 
@@ -161,16 +193,16 @@ export function AudioPlayer({ track }: { track: Track }) {
         >
           {isPlaying ? <PauseIcon /> : <PlayIcon />}
         </button>
-        <button class="btn focusable" tabIndex={0}>
+        <button class="btn focusable" tabIndex={0} onClick={onNext}>
           <NextIcon />
         </button>
         <button 
-          class={`btn secondary-btn focusable ${isRepeat ? 'active' : ''}`} 
+          class={`btn secondary-btn focusable ${repeatMode !== 'off' ? 'active' : ''}`} 
           tabIndex={0}
-          onClick={() => setIsRepeat(!isRepeat)}
-          title="Repeat"
+          onClick={cycleRepeat}
+          title={repeatMode === 'one' ? "Repeat One" : repeatMode === 'all' ? "Repeat All" : "Repeat Off"}
         >
-          <RepeatIcon />
+          {repeatMode === 'one' ? <RepeatOneIcon /> : <RepeatIcon />}
         </button>
       </div>
 
@@ -178,7 +210,7 @@ export function AudioPlayer({ track }: { track: Track }) {
         ref={audioRef} 
         src={streamUrl} 
         onTimeUpdate={handleTimeUpdate}
-        onEnded={() => setIsPlaying(false)}
+        onEnded={handleEnded}
         preload="metadata"
       />
     </div>

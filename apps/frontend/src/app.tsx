@@ -14,10 +14,9 @@ export interface Track {
 
 export function App() {
   const [tracks, setTracks] = useState<Track[]>([]);
-  const [currentTrack, setCurrentTrack] = useState<Track | null>(null);
+  const [repeatMode, setRepeatMode] = useState<'off' | 'one' | 'all'>('off');
 
   useEffect(() => {
-    console.log("!!! V4 BOOTING - ID: 8822 !!!");
     fetch(`${BACKEND_URL}/api/tracks`)
       .then(res => res.json())
       .then(data => {
@@ -30,6 +29,29 @@ export function App() {
       .catch(err => console.error("API Error:", err));
   }, []);
 
+  const handleNext = () => {
+    if (!currentTrack || tracks.length === 0) return;
+    const currentIndex = tracks.findIndex(t => t.id === currentTrack.id);
+    let nextIndex = currentIndex + 1;
+    
+    if (nextIndex >= tracks.length) {
+      if (repeatMode === 'all') {
+        nextIndex = 0;
+      } else {
+        return; // End of playlist
+      }
+    }
+    setCurrentTrack(tracks[nextIndex]);
+  };
+
+  const handlePrev = () => {
+    if (!currentTrack || tracks.length === 0) return;
+    const currentIndex = tracks.findIndex(t => t.id === currentTrack.id);
+    let prevIndex = currentIndex - 1;
+    if (prevIndex < 0) prevIndex = tracks.length - 1;
+    setCurrentTrack(tracks[prevIndex]);
+  };
+
   return (
     <div class="app-container">
       <Sidebar tracks={tracks} currentTrack={currentTrack} onSelectTrack={setCurrentTrack} />
@@ -41,7 +63,13 @@ export function App() {
         </header>
         <main>
           {currentTrack ? (
-            <AudioPlayer track={currentTrack} />
+            <AudioPlayer 
+              track={currentTrack} 
+              onNext={handleNext} 
+              onPrev={handlePrev}
+              repeatMode={repeatMode}
+              setRepeatMode={setRepeatMode}
+            />
           ) : (
             <div class="loading" style={{ textAlign: 'center', padding: '5rem' }}>
               <h2>{tracks.length === 0 ? "DATABASE EMPTY - RUN INSERT COMMAND" : "LOADING TRACKS..."}</h2>
