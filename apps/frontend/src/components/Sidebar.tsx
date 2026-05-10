@@ -3,10 +3,11 @@ import { Track } from '../app';
 
 interface SidebarProps {
   tracks: Track[];
+  currentTrack: Track | null;
   onSelectTrack: (track: Track) => void;
 }
 
-export function Sidebar({ tracks, onSelectTrack }: SidebarProps) {
+export function Sidebar({ tracks, currentTrack, onSelectTrack }: SidebarProps) {
   const [isCollapsed, setIsCollapsed] = useState(true);
 
   return (
@@ -29,11 +30,21 @@ export function Sidebar({ tracks, onSelectTrack }: SidebarProps) {
         {tracks.map((song) => (
           <div 
             key={song.id} 
-            class="song-item focusable" 
+            class={`song-item focusable ${(!isCollapsed && currentTrack?.id === song.id) ? 'active' : ''}`} 
             tabIndex={0}
             onClick={() => onSelectTrack(song)}
           >
-            <div class="song-initial">{song.title[0]}</div>
+            {!isCollapsed ? (
+              <div class="song-info-row" style={{ display: 'flex', justifyContent: 'space-between', width: '100%', alignItems: 'center' }}>
+                <div class="song-info">
+                  <div class="song-title">{song.title}</div>
+                  <div class="song-artist">{song.artist}</div>
+                </div>
+                <div class="song-duration" style={{ fontSize: '0.8rem', opacity: 0.6 }}>3:45</div>
+              </div>
+            ) : (
+              <div class="song-initial">{song.title[0]}</div>
+            )}
           </div>
         ))}
       </div>
