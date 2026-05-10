@@ -17,15 +17,20 @@ export function App() {
   const [currentTrack, setCurrentTrack] = useState<Track | null>(null);
 
   useEffect(() => {
+    console.log("Fetching tracks from:", BACKEND_URL);
     fetch(`${BACKEND_URL}/api/tracks`)
       .then(res => res.json())
       .then(data => {
-        if (data.tracks && data.tracks.length > 0) {
-          setTracks(data.tracks);
-          setCurrentTrack(data.tracks[0]);
+        const trackList = data.tracks || [];
+        console.log("Received tracks:", trackList);
+        setTracks(trackList);
+        if (trackList.length > 0) {
+          setCurrentTrack(trackList[0]);
         }
       })
-      .catch(console.error);
+      .catch(err => {
+        console.error("Fetch error:", err);
+      });
   }, []);
 
   return (
@@ -33,14 +38,16 @@ export function App() {
       <Sidebar tracks={tracks} currentTrack={currentTrack} onSelectTrack={setCurrentTrack} />
       <div class="main-content">
         <header>
-          <h1>Ramam</h1>
+          <h1>RAMA RADIO V2</h1>
           <p>Premium Radio Streaming</p>
         </header>
         <main>
           {currentTrack ? (
             <AudioPlayer track={currentTrack} />
           ) : (
-            <div class="loading" style={{textAlign: 'center', padding: '2rem', color: 'var(--text-secondary)'}}>Loading amazing tunes...</div>
+            <div class="loading" style={{textAlign: 'center', padding: '2rem', color: 'var(--text-secondary)'}}>
+              {tracks.length === 0 ? "No tracks found in database." : "Loading amazing tunes..."}
+            </div>
           )}
         </main>
       </div>
