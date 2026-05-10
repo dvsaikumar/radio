@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'preact/hooks';
 import { AudioPlayer } from './components/AudioPlayer';
 import { Sidebar } from './components/Sidebar';
+import { Admin } from './components/Admin';
 
 export const BACKEND_URL = 'https://radio-backend.dvsaikumar.workers.dev';
 
@@ -17,17 +18,21 @@ export function App() {
   const [currentTrack, setCurrentTrack] = useState<Track | null>(null);
   const [repeatMode, setRepeatMode] = useState<'off' | 'one' | 'all'>('off');
 
-  useEffect(() => {
+  const fetchTracks = () => {
     fetch(`${BACKEND_URL}/api/tracks`)
       .then(res => res.json())
       .then(data => {
         const trackList = data.tracks || [];
         setTracks(trackList);
-        if (trackList.length > 0) {
+        if (!currentTrack && trackList.length > 0) {
           setCurrentTrack(trackList[0]);
         }
       })
       .catch(err => console.error("API Error:", err));
+  };
+
+  useEffect(() => {
+    fetchTracks();
   }, []);
 
   const handleNext = () => {
@@ -58,9 +63,14 @@ export function App() {
       <Sidebar tracks={tracks} currentTrack={currentTrack} onSelectTrack={setCurrentTrack} />
       <div class="main-content">
         <header>
-          <h1 style={{ color: '#00ffcc', textTransform: 'uppercase' }}>Ramam</h1>
-          <p>Online Radio Station</p>
-          <p>Status: {tracks.length > 0 ? "Online" : "Connecting to Database..."}</p>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+            <div>
+              <h1 style={{ color: '#00ffcc', textTransform: 'uppercase' }}>Ramam</h1>
+              <p>Online Radio Station</p>
+              <p>Status: {tracks.length > 0 ? "Online" : "Connecting to Database..."}</p>
+            </div>
+            <Admin tracks={tracks} onRefresh={fetchTracks} />
+          </div>
         </header>
         <main>
           {currentTrack ? (
@@ -73,7 +83,7 @@ export function App() {
             />
           ) : (
             <div class="loading" style={{ textAlign: 'center', padding: '5rem' }}>
-              <h2>{tracks.length === 0 ? "DATABASE EMPTY - RUN INSERT COMMAND" : "LOADING TRACKS..."}</h2>
+              <h2>{tracks.length === 0 ? "DATABASE EMPTY - USE ADMIN TO UPLOAD" : "LOADING TRACKS..."}</h2>
             </div>
           )}
         </main>
