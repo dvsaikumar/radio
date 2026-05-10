@@ -6,6 +6,7 @@
   --text-secondary: #a0a0b0;
   --glass-bg: rgba(26, 26, 36, 0.7);
   --glass-border: rgba(255, 255, 255, 0.1);
+  --accent-primary: #00ffcc;
 }
 
 * {
@@ -41,7 +42,8 @@ body {
 }
 
 header {
-  text-align: center;
+  width: 100%;
+  max-width: 1200px;
   animation: fadeInDown 0.8s ease-out;
 }
 
@@ -52,12 +54,6 @@ header h1 {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   margin-bottom: 0.5rem;
-}
-
-header p {
-  color: var(--text-secondary);
-  font-size: 1.2rem;
-  letter-spacing: 0.05em;
 }
 
 .player-card {
@@ -153,14 +149,6 @@ header p {
   box-shadow: inset 0 0 10px rgba(255, 51, 102, 0.2);
 }
 
-.progress-container {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  font-size: 0.85rem;
-  color: var(--text-secondary);
-}
-
 .progress-bar {
   flex: 1;
   height: 6px;
@@ -177,28 +165,6 @@ header p {
   border-radius: 3px;
   width: 0%;
   transition: width 0.1s linear;
-}
-
-@keyframes fadeInDown {
-  from {
-    opacity: 0;
-    transform: translateY(-20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
 }
 
 /* Sidebar Styles */
@@ -236,25 +202,6 @@ header p {
   overflow: hidden;
 }
 
-.collapse-btn {
-  background: rgba(255, 255, 255, 0.05);
-  border: none;
-  color: var(--text-primary);
-  width: 36px;
-  height: 36px;
-  border-radius: 10px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s ease;
-  flex-shrink: 0;
-}
-
-.collapse-btn:hover {
-  background: rgba(255, 255, 255, 0.1);
-}
-
 .song-list {
   flex: 1;
   overflow-y: auto;
@@ -272,16 +219,15 @@ header p {
   display: flex;
   align-items: center;
   gap: 1rem;
-  border: 1px solid transparent;
 }
 
 .song-item:hover {
   background: rgba(255, 255, 255, 0.05);
 }
 
-.sidebar.collapsed .song-item {
-  justify-content: center;
-  padding: 0.75rem 0;
+.song-item.active {
+  background: rgba(255, 51, 102, 0.1);
+  border: 1px solid rgba(255, 51, 102, 0.2);
 }
 
 .song-initial {
@@ -297,31 +243,172 @@ header p {
   flex-shrink: 0;
 }
 
-.song-info {
+/* Studio Dashboard Styles */
+.studio-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(10, 10, 12, 0.98);
+  backdrop-filter: blur(20px);
+  z-index: 1000;
+  display: flex;
+  color: #fff;
+  animation: fadeIn 0.3s ease;
+}
+
+.studio-container {
+  display: flex;
+  width: 100%;
+  height: 100%;
+}
+
+.studio-sidebar {
+  width: 260px;
+  background: rgba(255, 255, 255, 0.03);
+  border-right: 1px solid rgba(255, 255, 255, 0.05);
   display: flex;
   flex-direction: column;
-  overflow: hidden;
-  white-space: nowrap;
+  padding: 2rem;
 }
 
-.song-title {
-  font-weight: 600;
-  font-size: 0.95rem;
-  text-overflow: ellipsis;
-  overflow: hidden;
+.studio-logo {
+  font-weight: 900;
+  font-size: 1.2rem;
+  letter-spacing: 2px;
+  color: var(--accent-primary);
+  margin-bottom: 3rem;
 }
 
-.song-artist {
+.studio-nav {
+  flex: 1;
+}
+
+.nav-item {
+  padding: 0.8rem 1rem;
+  margin-bottom: 0.5rem;
+  border-radius: 8px;
+  cursor: pointer;
+  opacity: 0.6;
+  transition: all 0.2s;
+}
+
+.nav-item.active {
+  background: rgba(0, 255, 204, 0.1);
+  color: var(--accent-primary);
+  opacity: 1;
+}
+
+.studio-main {
+  flex: 1;
+  padding: 3rem;
+  overflow-y: auto;
+}
+
+.studio-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 3rem;
+}
+
+.header-stats {
+  display: flex;
+  gap: 2rem;
+}
+
+.stat-card {
+  background: rgba(255, 255, 255, 0.03);
+  padding: 1rem 2rem;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+}
+
+.stat-card .label { font-size: 0.7rem; text-transform: uppercase; opacity: 0.5; margin-bottom: 0.3rem; }
+.stat-card .value { font-size: 1.5rem; font-weight: 700; }
+.stat-card .value.green { color: #00ffcc; }
+
+.studio-grid {
+  display: grid;
+  grid-template-columns: 350px 1fr;
+  gap: 2rem;
+}
+
+.studio-card {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 20px;
+  padding: 2rem;
+}
+
+.studio-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.input-group label {
+  display: block;
   font-size: 0.8rem;
-  color: var(--text-secondary);
-  text-overflow: ellipsis;
-  overflow: hidden;
+  opacity: 0.6;
+  margin-bottom: 0.5rem;
 }
 
-/* Spatial Nav focus styles for TV */
-.focusable:focus {
-  outline: 3px solid var(--primary-color);
-  outline-offset: 2px;
-  box-shadow: 0 0 15px var(--primary-color);
-  background: rgba(255, 51, 102, 0.1);
+.input-group input {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 0.8rem;
+  border-radius: 8px;
+  color: #fff;
 }
+
+.file-upload-zone {
+  border: 2px dashed rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 2rem;
+  text-align: center;
+  cursor: pointer;
+}
+
+.studio-primary-btn {
+  background: var(--accent-primary);
+  color: #000;
+  font-weight: 700;
+  padding: 1rem;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+}
+
+.library-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1.5rem;
+}
+
+.library-table th { text-align: left; padding: 1rem; border-bottom: 1px solid rgba(255, 255, 255, 0.1); opacity: 0.5; }
+.library-table td { padding: 1rem; border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
+
+.studio-delete-btn {
+  background: rgba(255, 0, 0, 0.1);
+  color: #ff4d4d;
+  font-size: 0.7rem;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+}
+
+.studio-search {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  color: #fff;
+  width: 250px;
+}
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes fadeInDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
