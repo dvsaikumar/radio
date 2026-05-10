@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'preact/hooks';
 import { AudioPlayer } from './components/AudioPlayer';
 import { Sidebar } from './components/Sidebar';
-import { Admin } from './components/Admin';
 
 export const BACKEND_URL = 'https://radio-backend.dvsaikumar.workers.dev';
 
