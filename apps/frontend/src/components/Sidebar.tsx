@@ -1,20 +1,13 @@
 import { useState } from 'preact/hooks';
+import { Track } from '../app';
 
-interface Song {
-  id: string;
-  title: string;
-  artist: string;
+interface SidebarProps {
+  tracks: Track[];
+  currentTrack: Track | null;
+  onSelectTrack: (track: Track) => void;
 }
 
-const mockSongs: Song[] = [
-  { id: '1', title: 'Neon Nights', artist: 'Synthwave Dreams' },
-  { id: '2', title: 'Stellar Drift', artist: 'Cosmic Voyager' },
-  { id: '3', title: 'Midnight City', artist: 'Electro Pulse' },
-  { id: '4', title: 'Echoes in Time', artist: 'Retro Future' },
-  { id: '5', title: 'Plasma Core', artist: 'Cyber Punk' },
-];
-
-export function Sidebar() {
+export function Sidebar({ tracks, currentTrack, onSelectTrack }: SidebarProps) {
   const [isCollapsed, setIsCollapsed] = useState(false);
 
   return (
@@ -31,15 +24,21 @@ export function Sidebar() {
       </div>
       
       <div class="song-list">
-        {mockSongs.map((song) => (
-          <div key={song.id} class="song-item focusable" tabIndex={0}>
+        {tracks.length === 0 && !isCollapsed && (
+          <div style={{padding: '1rem', color: 'var(--text-secondary)', fontSize: '0.9rem'}}>No songs found.</div>
+        )}
+        {tracks.map((song) => (
+          <div 
+            key={song.id} 
+            class={`song-item focusable ${currentTrack?.id === song.id ? 'active' : ''}`} 
+            tabIndex={0}
+            onClick={() => onSelectTrack(song)}
+          >
             {!isCollapsed ? (
-              <>
-                <div class="song-info">
-                  <div class="song-title">{song.title}</div>
-                  <div class="song-artist">{song.artist}</div>
-                </div>
-              </>
+              <div class="song-info">
+                <div class="song-title">{song.title}</div>
+                <div class="song-artist">{song.artist}</div>
+              </div>
             ) : (
               <div class="song-initial">{song.title[0]}</div>
             )}

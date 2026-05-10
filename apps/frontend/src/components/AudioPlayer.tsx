@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'preact/hooks';
 import { useSpatialNav } from '../hooks/useSpatialNav';
+import { Track, BACKEND_URL } from '../app';
 
 // SVG Icons
 const PlayIcon = () => (
@@ -38,7 +39,7 @@ const RepeatIcon = () => (
   </svg>
 );
 
-export function AudioPlayer() {
+export function AudioPlayer({ track }: { track: Track }) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
   const [isShuffle, setIsShuffle] = useState(false);
@@ -46,36 +47,39 @@ export function AudioPlayer() {
   const audioRef = useRef<HTMLAudioElement>(null);
   const navRef = useSpatialNav();
 
-  // Mock track data for demonstration
-  const currentTrack = {
-    id: '123',
-    title: 'Neon Nights',
-    artist: 'Synthwave Dreams',
-    album: 'Cyber City',
-    coverUrl: 'https://via.placeholder.com/150',
-    // Example stream URL pointing to our backend edge proxy
-    // streamUrl: 'http://localhost:8787/stream/123'
-    streamUrl: '' // Empty for mock
-  };
+  const streamUrl = `${BACKEND_URL}/stream/${track.id}`;
 
   useEffect(() => {
+    // Reset play state and progress when track changes
+    setProgress(0);
+    
+    // Auto-play when track changes (if allowed by browser policy)
+    if (audioRef.current) {
+      audioRef.current.play()
+        .then(() => setIsPlaying(true))
+        .catch((e) => {
+          console.log("Autoplay prevented:", e);
+          setIsPlaying(false);
+        });
+    }
+
     if ('mediaSession' in navigator) {
       navigator.mediaSession.metadata = new MediaMetadata({
-        title: currentTrack.title,
-        artist: currentTrack.artist,
-        album: currentTrack.album,
+        title: track.title,
+        artist: track.artist,
+        album: track.album || '',
       });
 
       navigator.mediaSession.setActionHandler('play', () => togglePlay(true));
       navigator.mediaSession.setActionHandler('pause', () => togglePlay(false));
     }
-  }, [currentTrack]);
+  }, [track]);
 
   const togglePlay = (forceState?: boolean) => {
     const newState = forceState !== undefined ? forceState : !isPlaying;
     setIsPlaying(newState);
     
-    if (audioRef.current && currentTrack.streamUrl) {
+    if (audioRef.current) {
       if (newState) {
         audioRef.current.play().catch(console.error);
       } else {
@@ -88,36 +92,23 @@ export function AudioPlayer() {
     if (audioRef.current) {
       const current = audioRef.current.currentTime;
       const duration = audioRef.current.duration;
-      if (duration) {
+      if (duration && !isNaN(duration)) {
         setProgress((current / duration) * 100);
       }
     }
   };
 
-  // Mock progress simulation since we don't have a real stream URL playing
-  useEffect(() => {
-    let interval: ReturnType<typeof setInterval>;
-    if (isPlaying && !currentTrack.streamUrl) {
-      interval = setInterval(() => {
-        setProgress(p => (p >= 100 ? 0 : p + 0.5));
-      }, 1000);
-    }
-    return () => clearInterval(interval);
-  }, [isPlaying]);
-
   return (
     <div class="player-card" ref={navRef}>
       <div class="track-info">
-        <div class="track-title">{currentTrack.title}</div>
-        <div class="track-artist">{currentTrack.artist}</div>
+        <div class="track-title">{track.title}</div>
+        <div class="track-artist">{track.artist}</div>
       </div>
 
       <div class="progress-container">
-        <span>0:00</span>
         <div class="progress-bar focusable" tabIndex={0}>
           <div class="progress" style={{ width: `${progress}%` }}></div>
         </div>
-        <span>3:45</span>
       </div>
 
       <div class="controls">
@@ -154,9 +145,10 @@ export function AudioPlayer() {
 
       <audio 
         ref={audioRef} 
-        src={currentTrack.streamUrl} 
+        src={streamUrl} 
         onTimeUpdate={handleTimeUpdate}
         onEnded={() => setIsPlaying(false)}
+        preload="metadata"
       />
     </div>
   );
