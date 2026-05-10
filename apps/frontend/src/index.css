@@ -323,16 +323,16 @@ header h1 {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 3rem 4rem;
+  padding: 1.5rem 2rem; /* Reduced padding */
   background: #0a0a0c;
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
   z-index: 20;
 }
 
 .header-left h2 {
-  font-size: 3.5rem;
+  font-size: 2.8rem; /* Slightly smaller for density */
   font-weight: 900;
-  letter-spacing: -2px;
+  letter-spacing: -1.5px;
   background: linear-gradient(to right, #fff, rgba(255,255,255,0.4));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -345,52 +345,45 @@ header h1 {
 
 .stat-card {
   background: rgba(255, 255, 255, 0.04);
-  padding: 1.5rem 3rem; /* More padding */
-  border-radius: 16px;
+  padding: 1rem 2rem;
+  border-radius: 12px;
   border: 1px solid rgba(255, 255, 255, 0.05);
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
-  min-width: 180px; /* Prevent bunching */
+  gap: 0.3rem;
+  min-width: 140px;
 }
 
-.stat-card .label { 
-  font-size: 0.8rem; 
-  text-transform: uppercase; 
-  opacity: 0.4; 
-  letter-spacing: 1px; 
-}
-
-.stat-card .value { 
-  font-size: 2rem; 
-  font-weight: 800; 
-}
+.stat-card .label { font-size: 0.7rem; text-transform: uppercase; opacity: 0.4; letter-spacing: 1px; }
+.stat-card .value { font-size: 1.5rem; font-weight: 800; }
+.stat-card .value.green { color: var(--accent-primary); }
 
 .studio-grid {
   display: grid;
-  grid-template-columns: 40% 60%; /* The 40/60 Split */
+  grid-template-columns: 40% 60%; 
   flex: 1;
   overflow: hidden;
+  gap: 0; /* Remove gap to use border as divider */
 }
 
 .upload-card-pane {
-  padding: 3rem 4rem;
+  padding: 2rem; /* Tightened padding */
   border-right: 1px solid rgba(255, 255, 255, 0.05);
   height: 100%;
-  overflow-y: auto; /* Fixed behavior but can scroll internally if small screen */
+  overflow-y: auto;
 }
 
 .library-card-pane {
-  padding: 3rem 4rem;
+  padding: 2rem; /* Tightened padding */
   height: 100%;
-  overflow-y: auto; /* Independent scrolling for the library */
+  overflow-y: auto;
 }
 
 .studio-card {
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: 24px;
-  padding: 2.5rem;
+  border-radius: 20px;
+  padding: 1.5rem; /* More compact cards */
 }
 
 .studio-form {
