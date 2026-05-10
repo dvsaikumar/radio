@@ -311,42 +311,79 @@ header h1 {
 
 .studio-main {
   flex: 1;
-  padding: 4rem;
-  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  padding: 0; /* Remove padding here to handle sticky properly */
   background: radial-gradient(circle at top right, rgba(0, 255, 204, 0.03), transparent);
+  height: 100vh;
+  overflow: hidden; /* Main container doesn't scroll */
 }
 
 .studio-header {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 4rem;
-  width: 100%;
+  align-items: center;
+  padding: 3rem 4rem;
+  background: #0a0a0c;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  z-index: 20;
 }
 
 .header-left h2 {
-  font-size: 2.5rem;
-  font-weight: 800;
-  margin-bottom: 0.5rem;
+  font-size: 3.5rem;
+  font-weight: 900;
+  letter-spacing: -2px;
+  background: linear-gradient(to right, #fff, rgba(255,255,255,0.4));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .header-stats {
   display: flex;
-  gap: 1.5rem;
+  gap: 2rem;
 }
 
 .stat-card {
   background: rgba(255, 255, 255, 0.04);
-  padding: 1.2rem 2.5rem;
+  padding: 1.5rem 3rem; /* More padding */
   border-radius: 16px;
   border: 1px solid rgba(255, 255, 255, 0.05);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  min-width: 180px; /* Prevent bunching */
+}
+
+.stat-card .label { 
+  font-size: 0.8rem; 
+  text-transform: uppercase; 
+  opacity: 0.4; 
+  letter-spacing: 1px; 
+}
+
+.stat-card .value { 
+  font-size: 2rem; 
+  font-weight: 800; 
 }
 
 .studio-grid {
   display: grid;
-  grid-template-columns: 400px 1fr; /* Larger form area */
-  gap: 3rem;
-  align-items: start;
+  grid-template-columns: 40% 60%; /* The 40/60 Split */
+  flex: 1;
+  overflow: hidden;
+}
+
+.upload-card-pane {
+  padding: 3rem 4rem;
+  border-right: 1px solid rgba(255, 255, 255, 0.05);
+  height: 100%;
+  overflow-y: auto; /* Fixed behavior but can scroll internally if small screen */
+}
+
+.library-card-pane {
+  padding: 3rem 4rem;
+  height: 100%;
+  overflow-y: auto; /* Independent scrolling for the library */
 }
 
 .studio-card {

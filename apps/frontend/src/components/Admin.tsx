@@ -105,90 +105,94 @@ export function Admin({ tracks, onRefresh, isCollapsed }: { tracks: Track[], onR
           </header>
 
           <div class="studio-grid">
-            {/* Upload Card */}
-            <section class="studio-card upload-card" style={{ padding: '3rem' }}>
-              <h3 style={{ marginBottom: '2rem', fontSize: '1.5rem' }}>Upload Track</h3>
-              <form onSubmit={handleUpload} class="studio-form">
-                <div class="input-group">
-                  <label>Title</label>
-                  <input 
-                    type="text" 
-                    placeholder="Midnight City" 
-                    value={formData.title} 
-                    onInput={(e) => setFormData({ ...formData, title: (e.target as HTMLInputElement).value })}
-                    required
-                  />
-                </div>
-                <div class="input-group">
-                  <label>Artist</label>
-                  <input 
-                    type="text" 
-                    placeholder="M83" 
-                    value={formData.artist} 
-                    onInput={(e) => setFormData({ ...formData, artist: (e.target as HTMLInputElement).value })}
-                    required
-                  />
-                </div>
-                <div class="file-upload-zone">
-                  <input 
-                    type="file" 
-                    id="file-input"
-                    accept="audio/mpeg" 
-                    onChange={(e) => setFile((e.target as HTMLInputElement).files?.[0] || null)}
-                    required
-                    class="hidden-input"
-                  />
-                  <label for="file-input" class="file-label">
-                    <div class="upload-icon" style={{ fontSize: '2rem', marginBottom: '1rem' }}>📁</div>
-                    <div style={{ fontWeight: '600' }}>{file ? file.name : 'Choose MP3 File'}</div>
-                    <div style={{ fontSize: '0.8rem', opacity: 0.5, marginTop: '0.5rem' }}>or drag and drop here</div>
-                  </label>
-                </div>
-                <button type="submit" class="btn studio-primary-btn" disabled={isUploading}>
-                  {isUploading ? '🚀 Uploading...' : 'Sync to Cloud'}
-                </button>
-              </form>
-            </section>
+            {/* Upload Pane (Fixed/Left) */}
+            <div class="upload-card-pane">
+              <section class="studio-card upload-card">
+                <h3>Upload Track</h3>
+                <form onSubmit={handleUpload} class="studio-form">
+                  <div class="input-group">
+                    <label>Title</label>
+                    <input 
+                      type="text" 
+                      placeholder="Midnight City" 
+                      value={formData.title} 
+                      onInput={(e) => setFormData({ ...formData, title: (e.target as HTMLInputElement).value })}
+                      required
+                    />
+                  </div>
+                  <div class="input-group">
+                    <label>Artist</label>
+                    <input 
+                      type="text" 
+                      placeholder="M83" 
+                      value={formData.artist} 
+                      onInput={(e) => setFormData({ ...formData, artist: (e.target as HTMLInputElement).value })}
+                      required
+                    />
+                  </div>
+                  <div class="file-upload-zone">
+                    <input 
+                      type="file" 
+                      id="file-input"
+                      accept="audio/mpeg" 
+                      onChange={(e) => setFile((e.target as HTMLInputElement).files?.[0] || null)}
+                      required
+                      class="hidden-input"
+                    />
+                    <label for="file-input" class="file-label">
+                      <div class="upload-icon">📁</div>
+                      <div class="upload-text">{file ? file.name : 'Choose MP3 File'}</div>
+                      <div class="upload-subtext">or drag and drop here</div>
+                    </label>
+                  </div>
+                  <button type="submit" class="btn studio-primary-btn" disabled={isUploading}>
+                    {isUploading ? '🚀 Uploading...' : 'Sync to Cloud'}
+                  </button>
+                </form>
+              </section>
+            </div>
 
-            {/* Library Card */}
-            <section class="studio-card library-card">
-              <div class="card-header">
-                <h3>Track Library</h3>
-                <input 
-                  type="text" 
-                  placeholder="Search library..." 
-                  class="studio-search"
-                  value={searchQuery}
-                  onInput={(e) => setSearchQuery((e.target as HTMLInputElement).value)}
-                />
-              </div>
-              <div class="library-table-container">
-                <table class="library-table">
-                  <thead>
-                    <tr>
-                      <th>Title</th>
-                      <th>Artist</th>
-                      <th>Format</th>
-                      <th>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {filteredTracks.map(track => (
-                      <tr key={track.id}>
-                        <td class="bold">{track.title}</td>
-                        <td>{track.artist}</td>
-                        <td><span class="badge">MP3</span></td>
-                        <td>
-                          <button class="btn studio-delete-btn" onClick={() => handleDelete(track.id)}>
-                            Delete
-                          </button>
-                        </td>
+            {/* Library Pane (Scrollable/Right) */}
+            <div class="library-card-pane">
+              <section class="studio-card library-card">
+                <div class="card-header">
+                  <h3>Track Library</h3>
+                  <input 
+                    type="text" 
+                    placeholder="Search library..." 
+                    class="studio-search"
+                    value={searchQuery}
+                    onInput={(e) => setSearchQuery((e.target as HTMLInputElement).value)}
+                  />
+                </div>
+                <div class="library-table-container">
+                  <table class="library-table">
+                    <thead>
+                      <tr>
+                        <th>Title</th>
+                        <th>Artist</th>
+                        <th>Format</th>
+                        <th>Actions</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </section>
+                    </thead>
+                    <tbody>
+                      {filteredTracks.map(track => (
+                        <tr key={track.id}>
+                          <td class="bold">{track.title}</td>
+                          <td>{track.artist}</td>
+                          <td><span class="badge">MP3</span></td>
+                          <td>
+                            <button class="btn studio-delete-btn" onClick={() => handleDelete(track.id)}>
+                              Delete
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </section>
+            </div>
           </div>
         </main>
       </div>
