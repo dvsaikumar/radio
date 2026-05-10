@@ -17,7 +17,7 @@ export function App() {
   const [currentTrack, setCurrentTrack] = useState<Track | null>(null);
 
   useEffect(() => {
-    console.log("Fetching tracks from:", BACKEND_URL);
+    console.log("FETCHING START...");
     fetch(`${BACKEND_URL}/api/tracks`)
       .then(res => res.json())
       .then(data => {
@@ -35,15 +35,17 @@ export function App() {
       <Sidebar tracks={tracks} currentTrack={currentTrack} onSelectTrack={setCurrentTrack} />
       <div class="main-content">
         <header>
-          <h1 style={{color: '#ff4b2b'}}>RAMA RADIO V3 - LIVE</h1>
-          <p>Connected to: {BACKEND_URL}</p>
+          <h1 style={{color: '#ff4b2b', fontSize: '2.5rem', textShadow: '0 0 20px rgba(255,75,43,0.5)'}}>
+            RAMA RADIO FIXED
+          </h1>
+          <p>Live Streaming: {tracks.length > 0 ? tracks[0].title : "Checking database..."}</p>
         </header>
         <main>
           {currentTrack ? (
             <AudioPlayer track={currentTrack} />
           ) : (
             <div class="loading" style={{textAlign: 'center', padding: '2rem', color: 'var(--text-secondary)'}}>
-              {tracks.length === 0 ? "No tracks found in D1 Database. Please add a track!" : "Loading amazing tunes..."}
+              {tracks.length === 0 ? "No tracks found. Please run the D1 insert command!" : "Loading stream..."}
             </div>
           )}
         </main>
