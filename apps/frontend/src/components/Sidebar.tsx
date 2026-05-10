@@ -8,7 +8,7 @@ interface SidebarProps {
 }
 
 export function Sidebar({ tracks, currentTrack, onSelectTrack }: SidebarProps) {
-  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(true);
 
   return (
     <aside class={`sidebar ${isCollapsed ? 'collapsed' : ''}`}>
