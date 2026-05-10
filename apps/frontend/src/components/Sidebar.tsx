@@ -30,18 +30,11 @@ export function Sidebar({ tracks, currentTrack, onSelectTrack }: SidebarProps) {
         {tracks.map((song) => (
           <div 
             key={song.id} 
-            class={`song-item focusable ${currentTrack?.id === song.id ? 'active' : ''}`} 
+            class="song-item focusable" 
             tabIndex={0}
             onClick={() => onSelectTrack(song)}
           >
-            {!isCollapsed ? (
-              <div class="song-info">
-                <div class="song-title">{song.title}</div>
-                <div class="song-artist">{song.artist}</div>
-              </div>
-            ) : (
-              <div class="song-initial">{song.title[0]}</div>
-            )}
+            <div class="song-initial">{song.title[0]}</div>
           </div>
         ))}
       </div>
