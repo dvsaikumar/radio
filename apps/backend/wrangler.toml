@@ -12,5 +12,5 @@ preview_bucket_name = "radio-media-dev"
 [[d1_databases]]
 binding = "DB"
 database_name = "radio-db"
-database_id = "your-d1-uuid-here" # Replace with actual UUID
+database_id = "943bc826-a072-4a26-8eb4-52ca54c243d6" # Replace with actual UUID
 preview_database_id = "DB"
