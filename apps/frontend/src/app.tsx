@@ -55,7 +55,7 @@ export function App() {
 
   return (
     <div class="app-container">
-      <Sidebar tracks={tracks} currentTrack={currentTrack} onSelectTrack={setCurrentTrack} />
+      <Sidebar tracks={tracks} onSelectTrack={setCurrentTrack} />
       <div class="main-content">
         <header>
           <h1 style={{ color: '#00ffcc', textTransform: 'uppercase' }}>Ramam</h1>

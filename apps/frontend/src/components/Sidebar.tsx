@@ -3,11 +3,10 @@ import { Track } from '../app';
 
 interface SidebarProps {
   tracks: Track[];
-  currentTrack: Track | null;
   onSelectTrack: (track: Track) => void;
 }
 
-export function Sidebar({ tracks, currentTrack, onSelectTrack }: SidebarProps) {
+export function Sidebar({ tracks, onSelectTrack }: SidebarProps) {
   const [isCollapsed, setIsCollapsed] = useState(true);
 
   return (
