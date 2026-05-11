@@ -14,3 +14,7 @@ binding = "DB"
 database_name = "radio-db"
 database_id = "943bc826-a072-4a26-8eb4-52ca54c243d6" # Replace with actual UUID
 preview_database_id = "DB"
+
+[vars]
+ADMIN_USERNAME = "admin"
+ADMIN_PASSWORD = "password"

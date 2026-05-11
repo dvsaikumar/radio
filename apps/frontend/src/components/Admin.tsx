@@ -3,16 +3,29 @@ import { Track, BACKEND_URL } from '../app';
 
 export function Admin({ tracks, onRefresh, isCollapsed }: { tracks: Track[], onRefresh: () => void, isCollapsed?: boolean }) {
   const [isOpen, setIsOpen] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [authData, setAuthData] = useState({ username: '', password: '' });
   const [isUploading, setIsUploading] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [formData, setFormData] = useState({ title: '', artist: '' });
   const [file, setFile] = useState<File | null>(null);
+
+  const getAuthHeader = () => {
+    return 'Basic ' + btoa(`${authData.username}:${authData.password}`);
+  };
 
   const filteredTracks = useMemo(() => 
     tracks.filter(t => 
       t.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
       t.artist.toLowerCase().includes(searchQuery.toLowerCase())
     ), [tracks, searchQuery]);
+
+  const handleLogin = (e: Event) => {
+    e.preventDefault();
+    if (authData.username && authData.password) {
+      setIsAuthenticated(true);
+    }
+  };
 
   const handleUpload = async (e: Event) => {
     e.preventDefault();
@@ -27,6 +40,9 @@ export function Admin({ tracks, onRefresh, isCollapsed }: { tracks: Track[], onR
     try {
       const res = await fetch(`${BACKEND_URL}/api/tracks`, {
         method: 'POST',
+        headers: {
+          'Authorization': getAuthHeader()
+        },
         body,
       });
       if (res.ok) {
@@ -34,6 +50,9 @@ export function Admin({ tracks, onRefresh, isCollapsed }: { tracks: Track[], onR
         setFile(null);
         onRefresh();
         alert('✨ Track synced to Studio Library!');
+      } else if (res.status === 401) {
+        alert('❌ Invalid credentials.');
+        setIsAuthenticated(false);
       }
     } catch (err) {
       console.error(err);
@@ -49,9 +68,15 @@ export function Admin({ tracks, onRefresh, isCollapsed }: { tracks: Track[], onR
     try {
       const res = await fetch(`${BACKEND_URL}/api/tracks/${id}`, {
         method: 'DELETE',
+        headers: {
+          'Authorization': getAuthHeader()
+        },
       });
       if (res.ok) {
         onRefresh();
+      } else if (res.status === 401) {
+        alert('❌ Unauthorized action.');
+        setIsAuthenticated(false);
       }
     } catch (err) {
       console.error(err);
@@ -87,22 +112,57 @@ export function Admin({ tracks, onRefresh, isCollapsed }: { tracks: Track[], onR
 
         {/* Main Content */}
         <main class="studio-main">
-          <header class="studio-header">
-            <div class="header-left">
-              <h2 style={{ fontSize: '2rem' }}>Studio Library</h2>
-              <p style={{ opacity: 0.5, fontSize: '0.8rem' }}>Global edge assets</p>
+          {!isAuthenticated ? (
+            <div class="studio-login-overlay">
+              <section class="studio-card login-card">
+                <div class="login-header">
+                  <div class="lock-icon">🔒</div>
+                  <h2>Authorized Access Only</h2>
+                  <p>Please enter your credentials to manage the station.</p>
+                </div>
+                <form onSubmit={handleLogin} class="studio-form">
+                  <div class="input-group">
+                    <label>Username</label>
+                    <input 
+                      type="text" 
+                      placeholder="Enter username" 
+                      value={authData.username} 
+                      onInput={(e) => setAuthData({ ...authData, username: (e.target as HTMLInputElement).value })}
+                      required
+                    />
+                  </div>
+                  <div class="input-group">
+                    <label>Password</label>
+                    <input 
+                      type="password" 
+                      placeholder="••••••••" 
+                      value={authData.password} 
+                      onInput={(e) => setAuthData({ ...authData, password: (e.target as HTMLInputElement).value })}
+                      required
+                    />
+                  </div>
+                  <button type="submit" class="btn studio-primary-btn">Unlock Studio</button>
+                </form>
+              </section>
             </div>
-            <div class="header-stats">
-              <div class="stat-card">
-                <span class="label">Tracks</span>
-                <span class="value">{tracks.length}</span>
-              </div>
-              <div class="stat-card">
-                <span class="label">Status</span>
-                <span class="value green">Online</span>
-              </div>
-            </div>
-          </header>
+          ) : (
+            <>
+              <header class="studio-header">
+                <div class="header-left">
+                  <h2 style={{ fontSize: '2rem' }}>Studio Library</h2>
+                  <p style={{ opacity: 0.5, fontSize: '0.8rem' }}>Global edge assets</p>
+                </div>
+                <div class="header-stats">
+                  <div class="stat-card">
+                    <span class="label">Tracks</span>
+                    <span class="value">{tracks.length}</span>
+                  </div>
+                  <div class="stat-card">
+                    <span class="label">Status</span>
+                    <span class="value green">Online</span>
+                  </div>
+                </div>
+              </header>
 
           <div class="studio-grid">
             {/* Upload Pane (Fixed/Left) */}
@@ -192,8 +252,8 @@ export function Admin({ tracks, onRefresh, isCollapsed }: { tracks: Track[], onR
                   </table>
                 </div>
               </section>
-            </div>
-          </div>
+            </>
+          )}
         </main>
       </div>
     </div>

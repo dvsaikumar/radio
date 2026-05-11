@@ -2,7 +2,9 @@ import { useState, useEffect } from 'preact/hooks';
 import { AudioPlayer } from './components/AudioPlayer';
 import { Sidebar } from './components/Sidebar';
 
-export const BACKEND_URL = 'https://radio-backend.dvsaikumar.workers.dev';
+export const BACKEND_URL = window.location.hostname === 'localhost' 
+  ? 'http://localhost:8787' 
+  : 'https://radio-backend.dvsaikumar.workers.dev';
 
 export interface Track {
   id: string;

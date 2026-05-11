@@ -1,9 +1,12 @@
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
+import { basicAuth } from 'hono/basic-auth';
 
 type Bindings = {
   DB: D1Database;
   MEDIA_BUCKET: R2Bucket;
+  ADMIN_USERNAME?: string;
+  ADMIN_PASSWORD?: string;
 };
 
 const app = new Hono<{ Bindings: Bindings }>();
@@ -20,7 +23,12 @@ app.get('/api/tracks', async (c) => {
 });
 
 // Admin: Add new track (Upload to R2 + Insert to D1)
-app.post('/api/tracks', async (c) => {
+app.post('/api/tracks', (c, next) => {
+  return basicAuth({
+    username: c.env.ADMIN_USERNAME || 'admin',
+    password: c.env.ADMIN_PASSWORD || 'password',
+  })(c, next);
+}, async (c) => {
   try {
     const formData = await c.req.parseBody();
     const title = formData.title as string;
@@ -51,7 +59,12 @@ app.post('/api/tracks', async (c) => {
 });
 
 // Admin: Delete track (Delete from D1 + Delete from R2)
-app.delete('/api/tracks/:id', async (c) => {
+app.delete('/api/tracks/:id', (c, next) => {
+  return basicAuth({
+    username: c.env.ADMIN_USERNAME || 'admin',
+    password: c.env.ADMIN_PASSWORD || 'password',
+  })(c, next);
+}, async (c) => {
   const id = c.req.param('id');
   
   try {
