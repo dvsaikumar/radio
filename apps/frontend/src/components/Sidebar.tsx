@@ -37,12 +37,14 @@ export function Sidebar({ tracks, currentTrack, onSelectTrack, onRefreshTracks, 
             onClick={() => onSelectTrack(song)}
           >
             {!isCollapsed ? (
-              <div class="song-info-row" style={{ display: 'flex', justifyContent: 'space-between', width: '100%', alignItems: 'center' }}>
-                <div class="song-info">
-                  <div class="song-title">{song.title}</div>
-                  <div class="song-artist">{song.artist}</div>
+              <div class="song-info-row" style={{ display: 'flex', width: '100%', alignItems: 'center', gap: '1rem' }}>
+                <div class="song-index" style={{ opacity: 0.3, fontSize: '0.8rem', width: '20px' }}>
+                  {song.id.substring(0, 2)}
                 </div>
-                <div class="song-duration" style={{ fontSize: '0.8rem', opacity: 0.6 }}>3:45</div>
+                <div class="song-info">
+                  <div class="song-title" style={{ fontWeight: '600', fontSize: '0.95rem' }}>{song.title}</div>
+                  <div class="song-artist" style={{ fontSize: '0.8rem', opacity: 0.6 }}>{song.artist}</div>
+                </div>
               </div>
             ) : (
               <div class="song-initial">{song.title[0]}</div>
