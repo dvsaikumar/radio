@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'preact/hooks';
 import { AudioPlayer } from './components/AudioPlayer';
 import { Sidebar } from './components/Sidebar';
-import { Admin, Playlist } from './components/Admin';
+import { Playlist } from './components/Admin';
 
 export const BACKEND_URL = window.location.hostname === 'localhost' 
   ? 'http://localhost:8787' 
