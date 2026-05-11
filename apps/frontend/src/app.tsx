@@ -152,7 +152,6 @@ export function App() {
           )}
         </main>
       </div>
-      <div class="symmetry-buffer"></div>
     </div>
   );
 }
