@@ -230,11 +230,7 @@ export function Admin({ onRefresh, isCollapsed }: { onRefresh: () => void, isCol
                       required
                     />
                   </div>
-                  <button 
-                    type="submit" 
-                    class="btn studio-primary-btn"
-                    style={{ width: '100%', height: 'auto', padding: '1rem', borderRadius: '12px', background: 'var(--accent-primary)', color: 'black', fontWeight: 'bold', marginTop: '1rem' }}
-                  >
+                  <button type="submit" class="btn studio-primary-btn">
                     Unlock Studio
                   </button>
                 </form>
@@ -318,7 +314,6 @@ export function Admin({ onRefresh, isCollapsed }: { onRefresh: () => void, isCol
                             type="submit" 
                             class="btn studio-primary-btn" 
                             disabled={isUploading}
-                            style={{ width: '100%', height: 'auto', padding: '1rem', borderRadius: '12px', background: 'var(--accent-primary)', color: 'black', fontWeight: 'bold', marginTop: '1rem' }}
                           >
                             {isUploading ? '🚀 Uploading...' : 'Sync to Cloud'}
                           </button>
@@ -395,7 +390,6 @@ export function Admin({ onRefresh, isCollapsed }: { onRefresh: () => void, isCol
                           <button 
                             type="submit" 
                             class="btn studio-primary-btn"
-                            style={{ width: '100%', height: 'auto', padding: '1rem', borderRadius: '12px', background: 'var(--accent-primary)', color: 'black', fontWeight: 'bold', marginTop: '1rem' }}
                           >
                             Create Collection
                           </button>
