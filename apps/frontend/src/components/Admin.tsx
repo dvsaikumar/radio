@@ -56,13 +56,19 @@ export function Admin({ tracks, onRefresh, isCollapsed }: { tracks: Track[], onR
         },
         body: JSON.stringify(newPlaylist)
       });
+      
       if (res.ok) {
         setNewPlaylist({ name: '', description: '' });
-        fetchPlaylists();
+        await fetchPlaylists();
+        onRefresh(); // Sync with App.tsx state
         alert('📂 Playlist created!');
+      } else {
+        const errorData = await res.json().catch(() => ({}));
+        alert(`❌ Failed to create playlist: ${errorData.error || res.statusText}`);
       }
     } catch (err) {
-      console.error(err);
+      console.error('Playlist Creation Error:', err);
+      alert('❌ Connection failed. Is the backend worker deployed and accessible?');
     }
   };
 

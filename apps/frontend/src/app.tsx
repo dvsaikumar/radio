@@ -25,40 +25,43 @@ export function App() {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(true);
   const [loading, setLoading] = useState(true);
 
-  const fetchPlaylists = () => {
-    setLoading(true);
-    fetch(`${BACKEND_URL}/api/playlists`)
-      .then(res => res.json())
-      .then(data => {
-        setPlaylists(data.playlists || []);
-        
-        // Handle Deep Linking
-        const path = window.location.pathname.substring(1); // e.g. "playlist1"
+  const fetchPlaylists = async (isInitial = false) => {
+    if (isInitial) setLoading(true);
+    try {
+      const res = await fetch(`${BACKEND_URL}/api/playlists`);
+      const data = await res.json();
+      const playlistList = data.playlists || [];
+      setPlaylists(playlistList);
+      
+      if (isInitial) {
+        // Handle Deep Linking only on first load
+        const path = window.location.pathname.substring(1);
         if (path) {
           const playlistName = decodeURIComponent(path);
-          fetch(`${BACKEND_URL}/api/playlists/name/${playlistName}`)
-            .then(res => res.json())
-            .then(pData => {
-              if (pData.playlist) {
-                setCurrentPlaylist(pData.playlist);
-                setTracks(pData.tracks || []);
-                if (pData.tracks?.length > 0) {
-                  setCurrentTrack(pData.tracks[0]);
-                }
-              }
-            }).finally(() => setLoading(false));
-        } else {
-          setLoading(false);
+          const playlist = playlistList.find((p: any) => p.name.toLowerCase() === playlistName.toLowerCase());
+          if (playlist) {
+            handlePlaylistSelect(playlist);
+          } else {
+            // Try fetching by name if not in list (fallback)
+            const pRes = await fetch(`${BACKEND_URL}/api/playlists/name/${playlistName}`);
+            const pData = await pRes.json();
+            if (pData.playlist) {
+              setCurrentPlaylist(pData.playlist);
+              setTracks(pData.tracks || []);
+              if (pData.tracks?.length > 0) setCurrentTrack(pData.tracks[0]);
+            }
+          }
         }
-      })
-      .catch(err => {
-        console.error("API Error:", err);
-        setLoading(false);
-      });
+      }
+    } catch (err) {
+      console.error("API Error:", err);
+    } finally {
+      if (isInitial) setLoading(false);
+    }
   };
 
   useEffect(() => {
-    fetchPlaylists();
+    fetchPlaylists(true);
   }, []);
 
   const handlePlaylistSelect = (playlist: Playlist) => {
