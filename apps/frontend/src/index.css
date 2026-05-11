@@ -17,7 +17,7 @@
 
 body {
   font-family: 'Outfit', 'Inter', sans-serif;
-  background: radial-gradient(circle at center, #1a1a24 0%, #0f0f13 100%);
+  background: radial-gradient(circle at 50% 50%, #1e1e2f 0%, #0a0a0a 100%);
   background-attachment: fixed;
   color: var(--text-primary);
   min-height: 100vh;
@@ -41,7 +41,7 @@ body {
   padding: 2rem;
   overflow-y: auto;
   position: relative;
-  background: radial-gradient(circle at top right, rgba(0, 255, 204, 0.03), transparent);
+  background: radial-gradient(circle at top right, rgba(0, 255, 204, 0.05), transparent);
 }
 
 header {
@@ -53,25 +53,26 @@ header {
   text-align: center;
   margin-bottom: 4rem;
 }
-}
 
 header h1 {
-  font-size: clamp(3rem, 12vw, 6rem); /* Fluid Branding */
+  font-size: clamp(3rem, 12vw, 6rem);
   font-weight: 900;
-  letter-spacing: -0.05em;
+  text-transform: uppercase;
+  margin: 0;
+  padding: 0;
+  cursor: pointer;
   background: linear-gradient(135deg, #ff3366, #ff9933);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  margin-bottom: 0;
+  letter-spacing: -2px;
   line-height: 1;
 }
 
 header p {
-  color: var(--text-secondary);
-  font-size: clamp(0.7rem, 2vw, 0.9rem);
-  text-transform: uppercase;
-  letter-spacing: clamp(2px, 1vw, 4px);
   margin-top: 1rem;
+  font-size: 1rem;
+  letter-spacing: 3px;
+  text-transform: uppercase;
   opacity: 0.6;
 }
 

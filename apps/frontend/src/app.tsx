@@ -114,7 +114,7 @@ export function App() {
       />
       <div class="main-content">
         <header>
-          <h1 style={{ color: '#00ffcc', textTransform: 'uppercase', cursor: 'pointer' }} onClick={() => { window.history.pushState({}, '', '/'); setCurrentPlaylist(null); }}>Ramam</h1>
+          <h1 onClick={() => { window.history.pushState({}, '', '/'); setCurrentPlaylist(null); }}>Ramam</h1>
           <p>Online Radio Station</p>
           <p>Status: {playlists.length > 0 ? "Online" : "Connecting..."}</p>
         </header>
