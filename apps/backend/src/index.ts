@@ -16,7 +16,51 @@ app.use('*', cors());
 // Health check
 app.get('/', (c) => c.text('Radio Edge API is running!'));
 
-// Get all tracks from D1
+// Get all playlists
+app.get('/api/playlists', async (c) => {
+  const { results } = await c.env.DB.prepare('SELECT * FROM Playlists ORDER BY name ASC').all();
+  return c.json({ playlists: results });
+});
+
+// Admin: Create new playlist
+app.post('/api/playlists', (c, next) => {
+  return basicAuth({
+    username: c.env.ADMIN_USERNAME || 'admin',
+    password: c.env.ADMIN_PASSWORD || 'password',
+  })(c, next);
+}, async (c) => {
+  const { name, description } = await c.req.json();
+  if (!name) return c.json({ error: 'Name is required' }, 400);
+  
+  const id = crypto.randomUUID();
+  await c.env.DB.prepare('INSERT INTO Playlists (id, name, description) VALUES (?, ?, ?)')
+    .bind(id, name, description).run();
+  
+  return c.json({ success: true, playlist: { id, name, description } });
+});
+
+// Get tracks for a specific playlist
+app.get('/api/playlists/:id/tracks', async (c) => {
+  const playlistId = c.req.param('id');
+  const { results } = await c.env.DB.prepare('SELECT * FROM Tracks WHERE playlist_id = ? ORDER BY created_at DESC')
+    .bind(playlistId).all();
+  return c.json({ tracks: results });
+});
+
+// Get playlist by name (for deep linking)
+app.get('/api/playlists/name/:name', async (c) => {
+  const name = c.req.param('name');
+  const playlist = await c.env.DB.prepare('SELECT * FROM Playlists WHERE name = ? COLLATE NOCASE')
+    .bind(name).first();
+  if (!playlist) return c.notFound();
+  
+  const { results } = await c.env.DB.prepare('SELECT * FROM Tracks WHERE playlist_id = ? ORDER BY created_at DESC')
+    .bind(playlist.id).all();
+  
+  return c.json({ playlist, tracks: results });
+});
+
+// Get all tracks from D1 (Fallback/Discovery)
 app.get('/api/tracks', async (c) => {
   const { results } = await c.env.DB.prepare('SELECT * FROM Tracks ORDER BY created_at DESC').all();
   return c.json({ tracks: results });
@@ -33,6 +77,7 @@ app.post('/api/tracks', (c, next) => {
     const formData = await c.req.parseBody();
     const title = formData.title as string;
     const artist = formData.artist as string;
+    const playlistId = formData.playlist_id as string;
     const file = formData.file as File;
 
     if (!title || !artist || !file) {
@@ -49,10 +94,10 @@ app.post('/api/tracks', (c, next) => {
 
     // 2. Insert into D1
     await c.env.DB.prepare(
-      'INSERT INTO Tracks (id, title, artist, r2_key) VALUES (?, ?, ?, ?)'
-    ).bind(id, title, artist, fileName).run();
+      'INSERT INTO Tracks (id, title, artist, r2_key, playlist_id) VALUES (?, ?, ?, ?, ?)'
+    ).bind(id, title, artist, fileName, playlistId || null).run();
 
-    return c.json({ success: true, track: { id, title, artist, r2_key: fileName } });
+    return c.json({ success: true, track: { id, title, artist, r2_key: fileName, playlist_id: playlistId } });
   } catch (error: any) {
     return c.json({ error: error.message }, 500);
   }

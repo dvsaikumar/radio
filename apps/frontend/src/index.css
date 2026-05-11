@@ -656,7 +656,49 @@ header p {
   transition: border-color 0.3s;
 }
 
-.studio-login-overlay .input-group input:focus {
+/* Playlist Selection Grid */
+.playlist-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 2rem;
+  width: 100%;
+  max-width: 900px;
+  margin-top: 2rem;
+  animation: fadeInUp 0.8s ease-out;
+}
+
+.playlist-card-select {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 20px;
+  padding: 2rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+}
+
+.playlist-card-select:hover, .playlist-card-select:focus {
+  background: rgba(0, 255, 204, 0.05);
   border-color: var(--accent-primary);
-  outline: none;
+  transform: translateY(-10px);
+  box-shadow: 0 20px 40px rgba(0, 255, 204, 0.1);
+}
+
+.playlist-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.playlist-card-select h3 {
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.playlist-card-select p {
+  font-size: 0.8rem;
+  opacity: 0.4;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }

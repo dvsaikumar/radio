@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'preact/hooks';
 import { AudioPlayer } from './components/AudioPlayer';
 import { Sidebar } from './components/Sidebar';
+import { Playlist } from './components/Admin';
 
 export const BACKEND_URL = window.location.hostname === 'localhost' 
   ? 'http://localhost:8787' 
@@ -12,30 +13,68 @@ export interface Track {
   artist: string;
   album: string;
   r2_key: string;
+  playlist_id: string;
 }
 
 export function App() {
   const [tracks, setTracks] = useState<Track[]>([]);
+  const [playlists, setPlaylists] = useState<Playlist[]>([]);
+  const [currentPlaylist, setCurrentPlaylist] = useState<Playlist | null>(null);
   const [currentTrack, setCurrentTrack] = useState<Track | null>(null);
   const [repeatMode, setRepeatMode] = useState<'off' | 'one' | 'all'>('off');
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(true);
+  const [loading, setLoading] = useState(true);
 
-  const fetchTracks = () => {
-    fetch(`${BACKEND_URL}/api/tracks`)
+  const fetchPlaylists = () => {
+    setLoading(true);
+    fetch(`${BACKEND_URL}/api/playlists`)
       .then(res => res.json())
       .then(data => {
-        const trackList = data.tracks || [];
-        setTracks(trackList);
-        if (!currentTrack && trackList.length > 0) {
-          setCurrentTrack(trackList[0]);
+        setPlaylists(data.playlists || []);
+        
+        // Handle Deep Linking
+        const path = window.location.pathname.substring(1); // e.g. "playlist1"
+        if (path) {
+          const playlistName = decodeURIComponent(path);
+          fetch(`${BACKEND_URL}/api/playlists/name/${playlistName}`)
+            .then(res => res.json())
+            .then(pData => {
+              if (pData.playlist) {
+                setCurrentPlaylist(pData.playlist);
+                setTracks(pData.tracks || []);
+                if (pData.tracks?.length > 0) {
+                  setCurrentTrack(pData.tracks[0]);
+                }
+              }
+            }).finally(() => setLoading(false));
+        } else {
+          setLoading(false);
         }
       })
-      .catch(err => console.error("API Error:", err));
+      .catch(err => {
+        console.error("API Error:", err);
+        setLoading(false);
+      });
   };
 
   useEffect(() => {
-    fetchTracks();
+    fetchPlaylists();
   }, []);
+
+  const handlePlaylistSelect = (playlist: Playlist) => {
+    window.history.pushState({}, '', `/${encodeURIComponent(playlist.name)}`);
+    setLoading(true);
+    fetch(`${BACKEND_URL}/api/playlists/${playlist.id}/tracks`)
+      .then(res => res.json())
+      .then(data => {
+        setCurrentPlaylist(playlist);
+        setTracks(data.tracks || []);
+        if (data.tracks?.length > 0) {
+          setCurrentTrack(data.tracks[0]);
+        }
+      })
+      .finally(() => setLoading(false));
+  };
 
   const handleNext = () => {
     if (!currentTrack || tracks.length === 0) return;
@@ -66,28 +105,46 @@ export function App() {
         tracks={tracks} 
         currentTrack={currentTrack} 
         onSelectTrack={setCurrentTrack} 
-        onRefreshTracks={fetchTracks}
+        onRefreshTracks={fetchPlaylists}
         isCollapsed={isSidebarCollapsed}
         setIsCollapsed={setIsSidebarCollapsed}
       />
       <div class="main-content">
         <header>
-          <h1 style={{ color: '#00ffcc', textTransform: 'uppercase' }}>Ramam</h1>
+          <h1 style={{ color: '#00ffcc', textTransform: 'uppercase', cursor: 'pointer' }} onClick={() => { window.history.pushState({}, '', '/'); setCurrentPlaylist(null); }}>Ramam</h1>
           <p>Online Radio Station</p>
-          <p>Status: {tracks.length > 0 ? "Online" : "Connecting to Database..."}</p>
+          <p>Status: {playlists.length > 0 ? "Online" : "Connecting..."}</p>
         </header>
         <main>
-          {currentTrack ? (
-            <AudioPlayer 
-              track={currentTrack} 
-              onNext={handleNext} 
-              onPrev={handlePrev}
-              repeatMode={repeatMode}
-              setRepeatMode={setRepeatMode}
-            />
+          {loading ? (
+            <div class="loading"><h2>SYNCING...</h2></div>
+          ) : !currentPlaylist ? (
+            <div class="playlist-grid">
+              {playlists.map(p => (
+                <div key={p.id} class="playlist-card-select focusable" tabIndex={0} onClick={() => handlePlaylistSelect(p)}>
+                  <div class="playlist-icon">📁</div>
+                  <h3>{p.name}</h3>
+                  <p>{p.description || "Collection"}</p>
+                </div>
+              ))}
+              {playlists.length === 0 && <h2>No Playlists found. Use Admin to create one.</h2>}
+            </div>
           ) : (
-            <div class="loading" style={{ textAlign: 'center', padding: '5rem' }}>
-              <h2>{tracks.length === 0 ? "DATABASE EMPTY - USE ADMIN TO UPLOAD" : "LOADING TRACKS..."}</h2>
+            <div style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+               <h2 style={{ marginBottom: '2rem', opacity: 0.5 }}>{currentPlaylist.name}</h2>
+               {currentTrack ? (
+                <AudioPlayer 
+                  track={currentTrack} 
+                  onNext={handleNext} 
+                  onPrev={handlePrev}
+                  repeatMode={repeatMode}
+                  setRepeatMode={setRepeatMode}
+                />
+              ) : (
+                <div class="loading">
+                  <h2>PLAYLIST EMPTY</h2>
+                </div>
+              )}
             </div>
           )}
         </main>
