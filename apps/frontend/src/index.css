@@ -736,3 +736,59 @@ header p {
   text-transform: uppercase;
   letter-spacing: 1px;
 }
+
+.studio-action-btn {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  color: var(--text-primary) !important;
+  padding: 6px 12px !important;
+  border-radius: 6px !important;
+  font-size: 0.75rem !important;
+  height: 32px !important;
+  width: auto !important;
+  aspect-ratio: auto !important;
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: 500;
+}
+
+.studio-action-btn:hover {
+  background: rgba(255, 255, 255, 0.1) !important;
+  transform: translateY(-1px);
+}
+
+.studio-action-btn.save {
+  background: var(--accent-primary) !important;
+  border-color: var(--accent-primary) !important;
+  color: #000 !important;
+  font-weight: 700;
+}
+
+.studio-action-btn.delete {
+  color: #ff4d4d !important;
+}
+
+.studio-action-btn.delete:hover {
+  background: rgba(255, 77, 77, 0.1) !important;
+  border-color: rgba(255, 77, 77, 0.2) !important;
+}
+
+.studio-input {
+  background: rgba(0, 0, 0, 0.3) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  color: #fff !important;
+  padding: 6px 10px !important;
+  border-radius: 6px !important;
+  font-size: 0.85rem !important;
+  width: 100%;
+  transition: all 0.2s ease;
+}
+
+.studio-input:focus {
+  outline: none;
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 10px rgba(0, 255, 204, 0.1);
+}

@@ -393,9 +393,9 @@ export function Admin({ onRefresh, isCollapsed }: { onRefresh: () => void, isCol
                                     {editingTrack?.id === track.id ? (
                                       <input 
                                         type="text" 
+                                        class="studio-input"
                                         value={editingTrack.title} 
                                         onInput={(e) => setEditingTrack({ ...editingTrack, title: (e.target as HTMLInputElement).value })}
-                                        style={{ background: '#000', border: '1px solid var(--accent-primary)', color: '#fff', width: '100%', padding: '4px' }}
                                       />
                                     ) : track.title}
                                   </td>
@@ -403,9 +403,9 @@ export function Admin({ onRefresh, isCollapsed }: { onRefresh: () => void, isCol
                                     {editingTrack?.id === track.id ? (
                                       <input 
                                         type="text" 
+                                        class="studio-input"
                                         value={editingTrack.artist} 
                                         onInput={(e) => setEditingTrack({ ...editingTrack, artist: (e.target as HTMLInputElement).value })}
-                                        style={{ background: '#000', border: '1px solid var(--accent-primary)', color: '#fff', width: '100%', padding: '4px' }}
                                       />
                                     ) : track.artist}
                                   </td>
@@ -413,15 +413,15 @@ export function Admin({ onRefresh, isCollapsed }: { onRefresh: () => void, isCol
                                   <td style={{ display: 'flex', gap: '8px' }}>
                                     {editingTrack?.id === track.id ? (
                                       <>
-                                        <button class="btn studio-primary-btn" style={{ padding: '4px 8px', fontSize: '0.7rem' }} onClick={handleSaveTrack}>Save</button>
-                                        <button class="btn" style={{ padding: '4px 8px', fontSize: '0.7rem', color: '#ff4d4d' }} onClick={() => setEditingTrack(null)}>Cancel</button>
+                                        <button class="studio-action-btn save" onClick={handleSaveTrack}>Save</button>
+                                        <button class="studio-action-btn" onClick={() => setEditingTrack(null)}>Cancel</button>
                                       </>
                                     ) : (
                                       <>
-                                        <button class="btn" style={{ background: 'rgba(255,255,255,0.05)', color: '#00ffcc', padding: '4px 8px', fontSize: '0.7rem' }} onClick={() => setEditingTrack(track)}>
+                                        <button class="studio-action-btn" onClick={() => setEditingTrack(track)}>
                                           Edit
                                         </button>
-                                        <button class="btn studio-delete-btn" onClick={() => handleDelete(track.id)}>
+                                        <button class="studio-action-btn delete" onClick={() => handleDelete(track.id)}>
                                           Delete
                                         </button>
                                       </>
@@ -488,9 +488,9 @@ export function Admin({ onRefresh, isCollapsed }: { onRefresh: () => void, isCol
                                     {editingPlaylist?.id === p.id ? (
                                       <input 
                                         type="text" 
+                                        class="studio-input"
                                         value={editingPlaylist.name} 
                                         onInput={(e) => setEditingPlaylist({ ...editingPlaylist, name: (e.target as HTMLInputElement).value })}
-                                        style={{ background: '#000', border: '1px solid var(--accent-primary)', color: '#fff', width: '100%', padding: '4px' }}
                                       />
                                     ) : p.name}
                                   </td>
@@ -498,9 +498,9 @@ export function Admin({ onRefresh, isCollapsed }: { onRefresh: () => void, isCol
                                     {editingPlaylist?.id === p.id ? (
                                       <input 
                                         type="text" 
+                                        class="studio-input"
                                         value={editingPlaylist.description} 
                                         onInput={(e) => setEditingPlaylist({ ...editingPlaylist, description: (e.target as HTMLInputElement).value })}
-                                        style={{ background: '#000', border: '1px solid var(--accent-primary)', color: '#fff', width: '100%', padding: '4px' }}
                                       />
                                     ) : p.description}
                                   </td>
@@ -508,11 +508,11 @@ export function Admin({ onRefresh, isCollapsed }: { onRefresh: () => void, isCol
                                   <td style={{ display: 'flex', gap: '8px' }}>
                                     {editingPlaylist?.id === p.id ? (
                                       <>
-                                        <button class="btn studio-primary-btn" style={{ padding: '4px 8px', fontSize: '0.7rem' }} onClick={handleSavePlaylist}>Save</button>
-                                        <button class="btn" style={{ padding: '4px 8px', fontSize: '0.7rem', color: '#ff4d4d' }} onClick={() => setEditingPlaylist(null)}>Cancel</button>
+                                        <button class="studio-action-btn save" onClick={handleSavePlaylist}>Save</button>
+                                        <button class="studio-action-btn" onClick={() => setEditingPlaylist(null)}>Cancel</button>
                                       </>
                                     ) : (
-                                      <button class="btn" style={{ background: 'rgba(255,255,255,0.05)', color: '#00ffcc', padding: '4px 8px', fontSize: '0.7rem' }} onClick={() => setEditingPlaylist(p)}>
+                                      <button class="studio-action-btn" onClick={() => setEditingPlaylist(p)}>
                                         Edit
                                       </button>
                                     )}
