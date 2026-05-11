@@ -16,6 +16,14 @@ app.use('*', cors());
 // Health check
 app.get('/', (c) => c.text('Radio Edge API is running!'));
 
+// Admin: Verify credentials
+app.get('/api/admin/verify', (c, next) => {
+  return basicAuth({
+    username: c.env.ADMIN_USERNAME || 'admin',
+    password: c.env.ADMIN_PASSWORD || 'password',
+  })(c, next);
+}, (c) => c.json({ success: true }));
+
 // Get all playlists
 app.get('/api/playlists', async (c) => {
   const { results } = await c.env.DB.prepare('SELECT * FROM Playlists ORDER BY name ASC').all();

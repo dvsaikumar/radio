@@ -35,11 +35,24 @@ export function Admin({ tracks, onRefresh, isCollapsed }: { tracks: Track[], onR
     }
   };
 
-  const handleLogin = (e: Event) => {
+  const handleLogin = async (e: Event) => {
     e.preventDefault();
-    if (authData.username && authData.password) {
-      setIsAuthenticated(true);
-      fetchPlaylists();
+    if (!authData.username || !authData.password) return;
+
+    try {
+      const res = await fetch(`${BACKEND_URL}/api/admin/verify`, {
+        headers: { 'Authorization': getAuthHeader() }
+      });
+      
+      if (res.ok) {
+        setIsAuthenticated(true);
+        fetchPlaylists();
+      } else {
+        alert('❌ Invalid Studio Credentials. Access Denied.');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('❌ Connection failed. Ensure the backend is deployed.');
     }
   };
 
