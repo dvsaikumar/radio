@@ -1,4 +1,3 @@
-import { useState } from 'preact/hooks';
 import { Track } from '../app';
 import { Admin } from './Admin';
 
@@ -7,10 +6,11 @@ interface SidebarProps {
   currentTrack: Track | null;
   onSelectTrack: (track: Track) => void;
   onRefreshTracks: () => void;
+  isCollapsed: boolean;
+  setIsCollapsed: (collapsed: boolean) => void;
 }
 
-export function Sidebar({ tracks, currentTrack, onSelectTrack, onRefreshTracks }: SidebarProps) {
-  const [isCollapsed, setIsCollapsed] = useState(true);
+export function Sidebar({ tracks, currentTrack, onSelectTrack, onRefreshTracks, isCollapsed, setIsCollapsed }: SidebarProps) {
 
   return (
     <aside class={`sidebar ${isCollapsed ? 'collapsed' : ''}`}>

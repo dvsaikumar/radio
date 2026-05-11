@@ -18,6 +18,7 @@ export function App() {
   const [tracks, setTracks] = useState<Track[]>([]);
   const [currentTrack, setCurrentTrack] = useState<Track | null>(null);
   const [repeatMode, setRepeatMode] = useState<'off' | 'one' | 'all'>('off');
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(true);
 
   const fetchTracks = () => {
     fetch(`${BACKEND_URL}/api/tracks`)
@@ -60,12 +61,14 @@ export function App() {
   };
 
   return (
-    <div class="app-container">
+    <div class={`app-container ${isSidebarCollapsed ? 'collapsed-layout' : ''}`}>
       <Sidebar 
         tracks={tracks} 
         currentTrack={currentTrack} 
         onSelectTrack={setCurrentTrack} 
         onRefreshTracks={fetchTracks}
+        isCollapsed={isSidebarCollapsed}
+        setIsCollapsed={setIsSidebarCollapsed}
       />
       <div class="main-content">
         <header>
@@ -89,6 +92,7 @@ export function App() {
           )}
         </main>
       </div>
+      <div class="symmetry-buffer"></div>
     </div>
   );
 }
