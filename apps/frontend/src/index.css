@@ -15,13 +15,26 @@
   padding: 0;
 }
 
+/* Universal Responsive Scaling */
+html {
+  font-size: 16px;
+}
+
+@media (min-width: 2560px) {
+  html { font-size: 24px; } /* 4K & Large TVs */
+}
+
+@media (max-width: 480px) {
+  html { font-size: 14px; } /* Small Mobile */
+}
+
 body {
   font-family: 'Outfit', 'Inter', sans-serif;
   background: radial-gradient(circle at 50% 50%, #1a1a24 0%, #0f0f13 100%);
   color: var(--text-primary);
   min-height: 100vh;
   margin: 0;
-  overflow: hidden;
+  overflow-x: hidden; /* Prevent horizontal scroll */
 }
 
 .app-container {
@@ -38,8 +51,8 @@ body {
   flex: 1;
   display: flex;
   flex-direction: column;
-  padding: 4rem;
-  gap: 4rem;
+  padding: clamp(1rem, 5vw, 4rem);
+  gap: clamp(1rem, 5vh, 4rem);
   overflow-y: auto;
   align-items: center;
   justify-content: center;
@@ -47,15 +60,15 @@ body {
 
 header {
   text-align: center;
-  margin-bottom: 3rem; /* Spacing above player */
+  margin-bottom: clamp(1.5rem, 5vh, 4rem);
   animation: fadeInDown 1s ease-out;
   width: 100%;
 }
 
 header h1 {
-  font-size: 5rem;
+  font-size: clamp(3rem, 12vw, 6rem); /* Fluid Branding */
   font-weight: 900;
-  letter-spacing: -3px;
+  letter-spacing: -0.05em;
   background: linear-gradient(135deg, #ff3366, #ff9933);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -65,9 +78,9 @@ header h1 {
 
 header p {
   color: var(--text-secondary);
-  font-size: 0.9rem;
+  font-size: clamp(0.7rem, 2vw, 0.9rem);
   text-transform: uppercase;
-  letter-spacing: 4px;
+  letter-spacing: clamp(2px, 1vw, 4px);
   margin-top: 1rem;
   opacity: 0.6;
 }
@@ -77,24 +90,35 @@ header p {
   backdrop-filter: blur(40px);
   -webkit-backdrop-filter: blur(40px);
   border: 1px solid rgba(255, 255, 255, 0.05);
-  border-radius: 48px;
-  padding: 4rem;
+  border-radius: clamp(24px, 5vw, 48px);
+  padding: clamp(1.5rem, 6vw, 4rem);
   display: flex;
   flex-direction: column;
-  gap: 3rem;
+  gap: clamp(1rem, 4vh, 3rem);
   box-shadow: 
     0 30px 60px rgba(0, 0, 0, 0.5),
     inset 0 0 20px rgba(255, 255, 255, 0.02);
   transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
   animation: fadeInUp 1.2s ease-out;
   max-width: 650px;
-  width: 100%;
+  width: 90%; /* Elastic width */
 }
 
 .player-card:hover {
   transform: translateY(-15px) scale(1.02);
   background: rgba(255, 255, 255, 0.04);
   border-color: rgba(255, 255, 255, 0.1);
+}
+
+@media (max-width: 768px) {
+  .sidebar:not(.collapsed) {
+    width: 100vw;
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    z-index: 1000;
+  }
 }
 
 .track-info {
@@ -106,8 +130,9 @@ header p {
 }
 
 .track-title {
-  font-size: 1.5rem;
-  font-weight: 600;
+  font-size: clamp(1.5rem, 5vw, 2.5rem); /* Fluid Track Title */
+  font-weight: 800;
+  letter-spacing: -1px;
 }
 
 .track-artist {
@@ -119,7 +144,7 @@ header p {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 1.5rem;
+  gap: clamp(1rem, 4vw, 2.5rem);
 }
 
 .btn {
@@ -132,8 +157,8 @@ header p {
   justify-content: center;
   align-items: center;
   border-radius: 50%;
-  width: 48px;
-  height: 48px;
+  width: clamp(48px, 10vw, 60px);
+  height: clamp(48px, 10vw, 60px);
   background: rgba(255, 255, 255, 0.05);
 }
 
@@ -143,8 +168,8 @@ header p {
 }
 
 .btn.play-btn {
-  width: 64px;
-  height: 64px;
+  width: clamp(70px, 15vw, 90px);
+  height: clamp(70px, 15vw, 90px);
   background: var(--primary-color);
   box-shadow: 0 4px 15px rgba(255, 51, 102, 0.4);
 }
@@ -396,9 +421,16 @@ header p {
 
 .studio-grid {
   display: grid;
-  grid-template-columns: 380px 1fr; /* Slightly wider upload pane */
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Responsive Grid */
   flex: 1;
-  overflow: hidden;
+  overflow-y: auto;
+}
+
+@media (min-width: 1200px) {
+  .studio-grid {
+    grid-template-columns: 380px 1fr;
+    overflow: hidden;
+  }
 }
 
 .upload-card-pane {
