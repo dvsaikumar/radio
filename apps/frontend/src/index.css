@@ -594,13 +594,30 @@ header p {
   font-size: 0.8rem;
 }
 
+.studio-primary-btn {
+  background: var(--accent-primary) !important;
+  color: #000 !important;
+  font-weight: 700;
+  width: 100% !important;
+  height: auto !important;
+  padding: 1rem !important;
+  border-radius: 12px !important;
+  margin-top: 1rem;
+  font-size: 1rem !important;
+}
+
+.studio-primary-btn:hover {
+  filter: brightness(1.2);
+  transform: translateY(-2px);
+}
+
 .exit-btn {
   background: rgba(255, 255, 255, 0.02);
   border: 1px solid rgba(255, 255, 255, 0.06);
   border-radius: 6px;
   padding: 0.6rem;
-  width: 100% !important; /* Force full width */
-  height: auto !important; /* Force auto height */
+  width: 100% !important;
+  height: auto !important;
   font-size: 0.75rem;
 }
 

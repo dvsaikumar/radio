@@ -64,7 +64,7 @@ export function Admin({ tracks, onRefresh, isCollapsed }: { tracks: Track[], onR
         alert('📂 Playlist created!');
       } else {
         const errorData = await res.json().catch(() => ({}));
-        alert(`❌ Failed to create playlist: ${errorData.error || res.statusText}`);
+        alert(`❌ Failed to create playlist (Status ${res.status}): ${errorData.error || res.statusText || 'Unknown Error'}`);
       }
     } catch (err) {
       console.error('Playlist Creation Error:', err);
@@ -200,7 +200,13 @@ export function Admin({ tracks, onRefresh, isCollapsed }: { tracks: Track[], onR
                       required
                     />
                   </div>
-                  <button type="submit" class="btn studio-primary-btn">Unlock Studio</button>
+                  <button 
+                    type="submit" 
+                    class="btn studio-primary-btn"
+                    style={{ width: '100%', height: 'auto', padding: '1rem', borderRadius: '12px', background: 'var(--accent-primary)', color: 'black', fontWeight: 'bold', marginTop: '1rem' }}
+                  >
+                    Unlock Studio
+                  </button>
                 </form>
               </section>
             </div>
@@ -278,7 +284,12 @@ export function Admin({ tracks, onRefresh, isCollapsed }: { tracks: Track[], onR
                               <div class="upload-subtext">or drag and drop here</div>
                             </label>
                           </div>
-                          <button type="submit" class="btn studio-primary-btn" disabled={isUploading}>
+                          <button 
+                            type="submit" 
+                            class="btn studio-primary-btn" 
+                            disabled={isUploading}
+                            style={{ width: '100%', height: 'auto', padding: '1rem', borderRadius: '12px', background: 'var(--accent-primary)', color: 'black', fontWeight: 'bold', marginTop: '1rem' }}
+                          >
                             {isUploading ? '🚀 Uploading...' : 'Sync to Cloud'}
                           </button>
                         </form>
@@ -351,7 +362,13 @@ export function Admin({ tracks, onRefresh, isCollapsed }: { tracks: Track[], onR
                               onInput={(e) => setNewPlaylist({ ...newPlaylist, description: (e.target as HTMLInputElement).value })}
                             />
                           </div>
-                          <button type="submit" class="btn studio-primary-btn">Create Collection</button>
+                          <button 
+                            type="submit" 
+                            class="btn studio-primary-btn"
+                            style={{ width: '100%', height: 'auto', padding: '1rem', borderRadius: '12px', background: 'var(--accent-primary)', color: 'black', fontWeight: 'bold', marginTop: '1rem' }}
+                          >
+                            Create Collection
+                          </button>
                         </form>
                       </section>
                     </div>

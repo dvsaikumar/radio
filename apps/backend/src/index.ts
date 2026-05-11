@@ -29,14 +29,19 @@ app.post('/api/playlists', (c, next) => {
     password: c.env.ADMIN_PASSWORD || 'password',
   })(c, next);
 }, async (c) => {
-  const { name, description } = await c.req.json();
-  if (!name) return c.json({ error: 'Name is required' }, 400);
-  
-  const id = crypto.randomUUID();
-  await c.env.DB.prepare('INSERT INTO Playlists (id, name, description) VALUES (?, ?, ?)')
-    .bind(id, name, description).run();
-  
-  return c.json({ success: true, playlist: { id, name, description } });
+  try {
+    const { name, description } = await c.req.json();
+    if (!name) return c.json({ error: 'Name is required' }, 400);
+    
+    const id = crypto.randomUUID();
+    await c.env.DB.prepare('INSERT INTO Playlists (id, name, description) VALUES (?, ?, ?)')
+      .bind(id, name, description).run();
+    
+    return c.json({ success: true, playlist: { id, name, description } });
+  } catch (err: any) {
+    console.error(err);
+    return c.json({ error: err.message.includes('UNIQUE') ? 'Playlist name already exists' : err.message }, 500);
+  }
 });
 
 // Get tracks for a specific playlist
