@@ -211,4 +211,38 @@ const streamHandler = async (c: any) => {
 app.get('/stream/:id', streamHandler);
 app.get('/api/stream/:id', streamHandler);
 
+// Update track metadata
+app.put('/api/tracks/:id', (c, next) => {
+  return basicAuth({
+    username: c.env.ADMIN_USERNAME || 'admin',
+    password: c.env.ADMIN_PASSWORD || 'password',
+  })(c, next);
+}, async (c) => {
+  const id = c.req.param('id');
+  const { title, artist, playlist_id } = await c.req.json();
+  
+  await c.env.DB.prepare(
+    'UPDATE Tracks SET title = ?, artist = ?, playlist_id = ? WHERE id = ?'
+  ).bind(title, artist, playlist_id, id).run();
+  
+  return c.json({ success: true });
+});
+
+// Update playlist metadata
+app.put('/api/playlists/:id', (c, next) => {
+  return basicAuth({
+    username: c.env.ADMIN_USERNAME || 'admin',
+    password: c.env.ADMIN_PASSWORD || 'password',
+  })(c, next);
+}, async (c) => {
+  const id = c.req.param('id');
+  const { name, description } = await c.req.json();
+  
+  await c.env.DB.prepare(
+    'UPDATE Playlists SET name = ?, description = ? WHERE id = ?'
+  ).bind(name, description, id).run();
+  
+  return c.json({ success: true });
+});
+
 export default app;

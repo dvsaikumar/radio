@@ -25,6 +25,9 @@ export function Admin({ onRefresh, isCollapsed }: { onRefresh: () => void, isCol
 
   const [localTracks, setLocalTracks] = useState<Track[]>([]);
 
+  const [editingTrack, setEditingTrack] = useState<Track | null>(null);
+  const [editingPlaylist, setEditingPlaylist] = useState<Playlist | null>(null);
+
   const fetchAllTracks = async () => {
     try {
       const res = await fetch(`${BACKEND_URL}/api/tracks`);
@@ -153,6 +156,46 @@ export function Admin({ onRefresh, isCollapsed }: { onRefresh: () => void, isCol
       } else if (res.status === 401) {
         alert('❌ Unauthorized action.');
         setIsAuthenticated(false);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleSaveTrack = async (e: Event) => {
+    e.preventDefault();
+    if (!editingTrack) return;
+    try {
+      const res = await fetch(`${BACKEND_URL}/api/tracks/${editingTrack.id}`, {
+        method: 'PUT',
+        headers: { 'Authorization': getAuthHeader(), 'Content-Type': 'application/json' },
+        body: JSON.stringify(editingTrack)
+      });
+      if (res.ok) {
+        setEditingTrack(null);
+        await fetchAllTracks();
+        onRefresh();
+        alert('✅ Track updated!');
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleSavePlaylist = async (e: Event) => {
+    e.preventDefault();
+    if (!editingPlaylist) return;
+    try {
+      const res = await fetch(`${BACKEND_URL}/api/playlists/${editingPlaylist.id}`, {
+        method: 'PUT',
+        headers: { 'Authorization': getAuthHeader(), 'Content-Type': 'application/json' },
+        body: JSON.stringify(editingPlaylist)
+      });
+      if (res.ok) {
+        setEditingPlaylist(null);
+        await fetchPlaylists();
+        onRefresh();
+        alert('✅ Playlist updated!');
       }
     } catch (err) {
       console.error(err);
@@ -346,13 +389,43 @@ export function Admin({ onRefresh, isCollapsed }: { onRefresh: () => void, isCol
                             <tbody>
                               {filteredTracks.map(track => (
                                 <tr key={track.id}>
-                                  <td class="bold">{track.title}</td>
-                                  <td>{track.artist}</td>
-                                  <td><span class="badge">{playlists.find(p => p.id === track.playlist_id)?.name || 'None'}</span></td>
+                                  <td class="bold">
+                                    {editingTrack?.id === track.id ? (
+                                      <input 
+                                        type="text" 
+                                        value={editingTrack.title} 
+                                        onInput={(e) => setEditingTrack({ ...editingTrack, title: (e.target as HTMLInputElement).value })}
+                                        style={{ background: '#000', border: '1px solid var(--accent-primary)', color: '#fff', width: '100%', padding: '4px' }}
+                                      />
+                                    ) : track.title}
+                                  </td>
                                   <td>
-                                    <button class="btn studio-delete-btn" onClick={() => handleDelete(track.id)}>
-                                      Delete
-                                    </button>
+                                    {editingTrack?.id === track.id ? (
+                                      <input 
+                                        type="text" 
+                                        value={editingTrack.artist} 
+                                        onInput={(e) => setEditingTrack({ ...editingTrack, artist: (e.target as HTMLInputElement).value })}
+                                        style={{ background: '#000', border: '1px solid var(--accent-primary)', color: '#fff', width: '100%', padding: '4px' }}
+                                      />
+                                    ) : track.artist}
+                                  </td>
+                                  <td><span class="badge">{playlists.find(p => p.id === track.playlist_id)?.name || 'None'}</span></td>
+                                  <td style={{ display: 'flex', gap: '8px' }}>
+                                    {editingTrack?.id === track.id ? (
+                                      <>
+                                        <button class="btn studio-primary-btn" style={{ padding: '4px 8px', fontSize: '0.7rem' }} onClick={handleSaveTrack}>Save</button>
+                                        <button class="btn" style={{ padding: '4px 8px', fontSize: '0.7rem', color: '#ff4d4d' }} onClick={() => setEditingTrack(null)}>Cancel</button>
+                                      </>
+                                    ) : (
+                                      <>
+                                        <button class="btn" style={{ background: 'rgba(255,255,255,0.05)', color: '#00ffcc', padding: '4px 8px', fontSize: '0.7rem' }} onClick={() => setEditingTrack(track)}>
+                                          Edit
+                                        </button>
+                                        <button class="btn studio-delete-btn" onClick={() => handleDelete(track.id)}>
+                                          Delete
+                                        </button>
+                                      </>
+                                    )}
                                   </td>
                                 </tr>
                               ))}
@@ -411,9 +484,39 @@ export function Admin({ onRefresh, isCollapsed }: { onRefresh: () => void, isCol
                             <tbody>
                               {playlists.map(p => (
                                 <tr key={p.id}>
-                                  <td class="bold">{p.name}</td>
-                                  <td>{p.description}</td>
+                                  <td class="bold">
+                                    {editingPlaylist?.id === p.id ? (
+                                      <input 
+                                        type="text" 
+                                        value={editingPlaylist.name} 
+                                        onInput={(e) => setEditingPlaylist({ ...editingPlaylist, name: (e.target as HTMLInputElement).value })}
+                                        style={{ background: '#000', border: '1px solid var(--accent-primary)', color: '#fff', width: '100%', padding: '4px' }}
+                                      />
+                                    ) : p.name}
+                                  </td>
+                                  <td>
+                                    {editingPlaylist?.id === p.id ? (
+                                      <input 
+                                        type="text" 
+                                        value={editingPlaylist.description} 
+                                        onInput={(e) => setEditingPlaylist({ ...editingPlaylist, description: (e.target as HTMLInputElement).value })}
+                                        style={{ background: '#000', border: '1px solid var(--accent-primary)', color: '#fff', width: '100%', padding: '4px' }}
+                                      />
+                                    ) : p.description}
+                                  </td>
                                   <td>{localTracks.filter(t => t.playlist_id === p.id).length}</td>
+                                  <td style={{ display: 'flex', gap: '8px' }}>
+                                    {editingPlaylist?.id === p.id ? (
+                                      <>
+                                        <button class="btn studio-primary-btn" style={{ padding: '4px 8px', fontSize: '0.7rem' }} onClick={handleSavePlaylist}>Save</button>
+                                        <button class="btn" style={{ padding: '4px 8px', fontSize: '0.7rem', color: '#ff4d4d' }} onClick={() => setEditingPlaylist(null)}>Cancel</button>
+                                      </>
+                                    ) : (
+                                      <button class="btn" style={{ background: 'rgba(255,255,255,0.05)', color: '#00ffcc', padding: '4px 8px', fontSize: '0.7rem' }} onClick={() => setEditingPlaylist(p)}>
+                                        Edit
+                                      </button>
+                                    )}
+                                  </td>
                                 </tr>
                               ))}
                             </tbody>
