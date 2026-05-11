@@ -114,15 +114,9 @@ export function App() {
       />
       <div class="main-content">
         <header>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
-            <div style={{ visibility: 'hidden', width: '50px' }}></div> {/* Spacer */}
-            <div style={{ textAlign: 'center' }}>
-              <h1 style={{ color: '#00ffcc', textTransform: 'uppercase', cursor: 'pointer', margin: 0 }} onClick={() => { window.history.pushState({}, '', '/'); setCurrentPlaylist(null); }}>Ramam</h1>
-              <p style={{ margin: 0 }}>Online Radio Station</p>
-            </div>
-            <Admin onRefresh={fetchPlaylists} isCollapsed={isSidebarCollapsed} />
-          </div>
-          <p style={{ marginTop: '0.5rem', opacity: 0.5 }}>Status: {playlists.length > 0 ? "Online" : "Connecting..."}</p>
+          <h1 style={{ color: '#00ffcc', textTransform: 'uppercase', cursor: 'pointer' }} onClick={() => { window.history.pushState({}, '', '/'); setCurrentPlaylist(null); }}>Ramam</h1>
+          <p>Online Radio Station</p>
+          <p>Status: {playlists.length > 0 ? "Online" : "Connecting..."}</p>
         </header>
         <main>
           {loading ? (
