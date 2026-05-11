@@ -23,6 +23,20 @@ export function Admin({ tracks, onRefresh, isCollapsed }: { tracks: Track[], onR
     return 'Basic ' + btoa(`${authData.username}:${authData.password}`);
   };
 
+  const [localTracks, setLocalTracks] = useState<Track[]>([]);
+
+  const fetchAllTracks = async () => {
+    try {
+      const res = await fetch(`${BACKEND_URL}/api/tracks`);
+      if (res.ok) {
+        const data = await res.json();
+        setLocalTracks(data.tracks || []);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   const fetchPlaylists = async () => {
     try {
       const res = await fetch(`${BACKEND_URL}/api/playlists`);
@@ -47,6 +61,7 @@ export function Admin({ tracks, onRefresh, isCollapsed }: { tracks: Track[], onR
       if (res.ok) {
         setIsAuthenticated(true);
         fetchPlaylists();
+        fetchAllTracks();
       } else {
         alert('❌ Invalid Studio Credentials. Access Denied.');
       }
@@ -107,9 +122,10 @@ export function Admin({ tracks, onRefresh, isCollapsed }: { tracks: Track[], onR
       if (res.ok) {
         setFormData({ ...formData, title: '', artist: '' });
         setFile(null);
-        onRefresh();
+        await fetchAllTracks();
+        onRefresh(); // Sync with App.tsx state
         alert('✨ Track synced to Studio Library!');
-      } else if (res.status === 401) {
+      } else {
         alert('❌ Invalid credentials.');
         setIsAuthenticated(false);
       }
@@ -132,6 +148,7 @@ export function Admin({ tracks, onRefresh, isCollapsed }: { tracks: Track[], onR
         },
       });
       if (res.ok) {
+        await fetchAllTracks();
         onRefresh();
       } else if (res.status === 401) {
         alert('❌ Unauthorized action.');
@@ -143,10 +160,10 @@ export function Admin({ tracks, onRefresh, isCollapsed }: { tracks: Track[], onR
   };
 
   const filteredTracks = useMemo(() => 
-    tracks.filter(t => 
+    localTracks.filter(t => 
       t.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
       t.artist.toLowerCase().includes(searchQuery.toLowerCase())
-    ), [tracks, searchQuery]);
+    ), [localTracks, searchQuery]);
 
   if (!isOpen) {
     return (
@@ -233,7 +250,7 @@ export function Admin({ tracks, onRefresh, isCollapsed }: { tracks: Track[], onR
                 <div class="header-stats">
                   <div class="stat-card">
                     <span class="label">{activeTab === 'library' ? 'Tracks' : 'Collections'}</span>
-                    <span class="value">{activeTab === 'library' ? tracks.length : playlists.length}</span>
+                    <span class="value">{activeTab === 'library' ? localTracks.length : playlists.length}</span>
                   </div>
                   <div class="stat-card">
                     <span class="label">Status</span>
@@ -402,7 +419,7 @@ export function Admin({ tracks, onRefresh, isCollapsed }: { tracks: Track[], onR
                                 <tr key={p.id}>
                                   <td class="bold">{p.name}</td>
                                   <td>{p.description}</td>
-                                  <td>{tracks.filter(t => t.playlist_id === p.id).length}</td>
+                                  <td>{localTracks.filter(t => t.playlist_id === p.id).length}</td>
                                 </tr>
                               ))}
                             </tbody>
