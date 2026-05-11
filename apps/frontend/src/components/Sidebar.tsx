@@ -52,7 +52,7 @@ export function Sidebar({ tracks, currentTrack, onSelectTrack, onRefreshTracks, 
       </div>
 
       <div class="sidebar-footer" style={{ padding: '1rem', borderTop: '1px solid var(--glass-border)' }}>
-        <Admin tracks={tracks} onRefresh={onRefreshTracks} isCollapsed={isCollapsed} />
+        <Admin onRefresh={onRefreshTracks} isCollapsed={isCollapsed} />
       </div>
     </aside>
   );

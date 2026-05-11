@@ -7,7 +7,7 @@ export interface Playlist {
   description: string;
 }
 
-export function Admin({ tracks, onRefresh, isCollapsed }: { tracks: Track[], onRefresh: () => void, isCollapsed?: boolean }) {
+export function Admin({ onRefresh, isCollapsed }: { onRefresh: () => void, isCollapsed?: boolean }) {
   const [isOpen, setIsOpen] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [authData, setAuthData] = useState({ username: '', password: '' });
